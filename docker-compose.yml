@@ -16,19 +16,19 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
-  ##   ---- SETUP YOUR DEFAULT PORT -----
-  #   ports:
-  #     - '1337:1337'
+  #   ---- SETUP YOUR DEFAULT PORT -----
+    ports:
+      - '3000:3000'
   ## ---- UNCOMMENT BELOW FOR POSTGRESQL DATABASE AND REDIS (common for web apps) -----
-  #    links:
-  #      - database
+    links:
+       - database
   #     - sessions
-  # database:
-  #   image: postgres:11
-  #   ports:
-  #     - '5432:5432'
-  #   environment:
-  #     - POSTGRES_HOST_AUTH_METHOD=trust
+  database:
+    image: postgres:11
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
   # sessions:
   #   image: redis:5
   #   ports:
