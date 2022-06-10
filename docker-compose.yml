@@ -1,7 +1,7 @@
 # Base Docker Compose configuration.
 # Not used by itself, but with the CI or DEV override files. Examples below...
 #
-# DEV Up (which builds the app container)
+# DEV Up (which builds the app container) -- Doesn't exist currently, probably doesn't need to for this project
 # $ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
 #
 # CI Run Command in App Container (which uses a built container for the app tagged: ${GITHUB_REPOSITORY}/${GITHUB_HEAD_REF} )
@@ -20,15 +20,15 @@ services:
     ports:
       - '3000:3000'
   ## ---- UNCOMMENT BELOW FOR POSTGRESQL DATABASE AND REDIS (common for web apps) -----
-    links:
-       - database
+    # links:
+    #    - database
   #     - sessions
-  database:
-    image: postgres:11
-    ports:
-      - '5432:5432'
-    environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
+  # database:
+  #   image: postgres:11
+  #   ports:
+  #     - '5432:5432'
+  #   environment:
+  #     - POSTGRES_HOST_AUTH_METHOD=trust
   # sessions:
   #   image: redis:5
   #   ports:
