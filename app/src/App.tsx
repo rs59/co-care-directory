@@ -1,39 +1,83 @@
-import React from 'react';
+import React, { useState } from "react";
 
-import { latLng, LatLngTuple } from 'leaflet';
+import { LatLngLiteral } from "leaflet";
 
-import '@trussworks/react-uswds/lib/uswds.css'
-import '@trussworks/react-uswds/lib/index.css'
-import { Header, GridContainer, Grid, Title, Alert } from '@trussworks/react-uswds'
+import "@trussworks/react-uswds/lib/uswds.css";
+import "@trussworks/react-uswds/lib/index.css";
+import {
+  Button,
+  Grid,
+  GridContainer,
+  Header,
+  Title,
+  TextInput,
+} from "@trussworks/react-uswds";
 
-import './App.css';
+import "./App.css";
 
-const CO_CDHS: LatLngTuple= [39.741367, -104.985207];
-const CO_CAPITOL: LatLngTuple = [39.739292, -104.984886];
+import zipToLatLong from "./data/colorado_zip_latlong.json";
 
 function App() {
+  const [zip, setZip] = useState<string>("");
+  const [center, setCenter] = useState<LatLngLiteral | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function doSearch(zip: string) {
+    // @ts-ignore
+    const center = zipToLatLong[zip]; // TODO: handle typing
+    if (center) {
+      setCenter(center);
+      setError(null);
+    } else {
+      setCenter(null);
+      setError("This is not a ZIP Code in Colorado");
+    }
+  }
+
+  // TODO: validate zip
   return (
     <div className="App">
-      <Header basic>
-        <h1>Care Directory</h1>
+      <Header basic color="primary" role="banner">
+        <div className="usa-nav-container">
+          <div className="usa-navbar">
+            <Title>
+              <a href="/" title="Home" aria-label="Home">
+                Colorado Care Directory Prototype
+              </a>
+            </Title>
+          </div>
+        </div>
       </Header>
-      <section>
-        <Alert headingLevel="h2" type='info' heading="Distance calculated in memory!">
-          The distance between the CO Department of Human Services and the CO Capitol building is {latLng(CO_CDHS).distanceTo(CO_CAPITOL)} meters
-        </Alert>
-
-        <GridContainer>
-          <Title>Responsive columns that stack into rows on small screens</Title>
-          <p>and are styled with USWDS utility classes!</p>
-          <Grid row>
-            <Grid className="bg-red" tablet={{ col: true }}> class name: bg-red</Grid>
-            <Grid className="bg-orange" tablet={{ col: true }}> class name: bg-orange</Grid>
-            <Grid className="bg-yellow" tablet={{ col: true }}> class name: bg-yellow</Grid>
-            <Grid className="bg-green" tablet={{ col: true }}> class name: bg-green</Grid>
-            <Grid className="bg-blue" tablet={{ col: true }}> class name: bg-blue</Grid>
-          </Grid>
-        </GridContainer>
-      </section>
+      <GridContainer>
+        <Grid row>
+          <div className="padding-top-4">
+            <h1>Find care near you</h1>
+            <div className="padding-bottom-2">
+              <TextInput
+                id="zipcode"
+                name="zipcode"
+                type="text"
+                placeholder="ZIP Code"
+                maxLength={5}
+                onChange={(evt) => setZip(evt.target.value)}
+              />
+            </div>
+            <Button type="button" onClick={() => doSearch(zip)}>
+              Search
+            </Button>
+          </div>
+        </Grid>
+        <Grid row>
+          <div className="padding-top-4">
+            {center && (
+              <p className="text-primary">
+                The center of the radius search is {center.lat}, {center.lng}
+              </p>
+            )}
+            {error && <p className="text-error">{error}</p>}
+          </div>
+        </Grid>
+      </GridContainer>
     </div>
   );
 }
