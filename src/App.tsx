@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { LatLngLiteral } from "leaflet";
 
@@ -6,6 +6,7 @@ import "@trussworks/react-uswds/lib/uswds.css";
 import "@trussworks/react-uswds/lib/index.css";
 import {
   Button,
+  CardGroup,
   Grid,
   GridContainer,
   Header,
@@ -15,14 +16,30 @@ import {
 
 import "./App.css";
 
+import { getMatchingCare } from "./util";
+
+import ResultCard from "./components/ResultCard";
+
 import zipToLatLong from "./data/colorado_zip_latlong.json";
+import { CareResult, CARE_DATA } from "./data/dummy_ladders_data";
+
+// TODO: add ui for radius
+const DEFAULT_RADIUS = 8047; // 5 miles in meters
 
 function App() {
   const [zip, setZip] = useState<string>("");
   const [center, setCenter] = useState<LatLngLiteral | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [results, setResults] = useState<CareResult[]>([]);
 
-  function doSearch(zip: string) {
+  useEffect(() => {
+    if (center) {
+      const results = getMatchingCare(CARE_DATA, center, DEFAULT_RADIUS);
+      setResults(results);
+    }
+  }, [center]);
+
+  function setSearchFilters(zip: string) {
     // @ts-ignore
     const center = zipToLatLong[zip]; // TODO: handle typing
     if (center) {
@@ -62,21 +79,29 @@ function App() {
                 onChange={(evt) => setZip(evt.target.value)}
               />
             </div>
-            <Button type="button" onClick={() => doSearch(zip)}>
+            <Button type="button" onClick={() => setSearchFilters(zip)}>
               Search
             </Button>
           </div>
         </Grid>
         <Grid row>
-          <div className="padding-top-4">
+          <div className="padding-top-4 padding-bottom-4">
             {center && (
               <p className="text-primary">
-                The center of the radius search is {center.lat}, {center.lng}
+                There are {results.length} results. The center of the radius
+                search is {center.lat}, {center.lng}
               </p>
             )}
             {error && <p className="text-error">{error}</p>}
           </div>
         </Grid>
+        <div>
+          <CardGroup>
+            {results.map((result) => (
+              <ResultCard data={result} key={result.id}></ResultCard>
+            ))}
+          </CardGroup>
+        </div>
       </GridContainer>
     </div>
   );
