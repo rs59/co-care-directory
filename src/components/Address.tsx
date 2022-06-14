@@ -1,6 +1,6 @@
-import { CareResult } from "../util";
+import { CareEntity } from "../util";
 
-export default function Address({ data }: { data: CareResult }) {
+export default function Address({ data }: { data: CareEntity }) {
   const commaSeparatedPieces = [data.address, data.city, data.state].filter(
     (item) => !!item
   );

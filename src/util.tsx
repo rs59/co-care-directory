@@ -30,17 +30,14 @@ export type CareEntity = {
   date_geocoded: string;
   data_source: string;
   dataset_name: string;
-};
-
-export type CareResult = CareEntity & {
-  distance: number;
+  distance?: number;
 };
 
 export function getMatchingCare(
   careData: CareEntity[],
   center: LatLngLiteral,
   radius: number
-): CareResult[] {
+): CareEntity[] {
   // calculate distance & sort results by distance
   const results = careData
     .map((result) => ({
@@ -52,4 +49,13 @@ export function getMatchingCare(
     });
 
   return results;
+}
+
+/**
+ * Helper function to parse filter values from URL search params
+ * @param searchParams 
+ * @returns Object containing search urls by name
+ */
+export function parseSearchParams(searchParams: URLSearchParams) {
+  return { urlZip: searchParams.get('zip') ?? "" }
 }
