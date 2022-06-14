@@ -1,36 +1,6 @@
-export type CareResult = {
-  x: number | null;
-  y: number | null;
-  id: number;
-  name: string;
-  address: string | null;
-  city: string;
-  state: string | null;
-  zip: string | null;
-  phone: string | null;
-  substance_abuse_services: string | null;
-  mental_health_settings: string | null;
-  additional_services: string | null;
-  languages_spoken: string | null;
-  population_served: string | null;
-  accessibility: string | null;
-  fees: string | null;
-  mon: string | null;
-  tue: string | null;
-  wed: string | null;
-  thu: string | null;
-  fri: string | null;
-  sat: string | null;
-  sun: string | null;
-  lat: number | null;
-  lng: number | null;
-  county: string;
-  date_geocoded: string;
-  data_source: string;
-  dataset_name: string;
-};
+import { CareEntity } from "../util";
 
-export const CARE_DATA: CareResult[] = [
+export const CARE_DATA: CareEntity[] = [
   {
     x: -105.054474,
     y: 38.995277,
@@ -23287,41 +23257,6 @@ export const CARE_DATA: CareResult[] = [
     lat: 37.201271,
     lng: -108.728731,
     county: "MONTEZUMA",
-    date_geocoded: "March 2020",
-    data_source:
-      "Office of Behavioral Health - Colorado Department of Human Services",
-    dataset_name:
-      "Substance use disorder licensing and mental health designation application system and service directory (Licensing and Designation Database and Electronic Records System)",
-  },
-  {
-    x: null,
-    y: null,
-    id: 1356,
-    name: "Extended Hands of Hope-Avanti House",
-    address: "No Address Given",
-    city: "Broomfield",
-    state: "CO",
-    zip: "80038",
-    phone: "(303) 655-7922",
-    substance_abuse_services: null,
-    mental_health_settings:
-      "Residential Long Term Treatment; Residential Short Term Treatment; Residential Child Care Facility",
-    additional_services: "Family Treatment; Trauma Specific",
-    languages_spoken: "English",
-    population_served:
-      "Youth; Minors/Adolescents; Clients referred from Court/Judicial System",
-    accessibility: "Wheelchair",
-    fees: "Medicaid; Private Insurance",
-    mon: null,
-    tue: null,
-    wed: null,
-    thu: null,
-    fri: null,
-    sat: null,
-    sun: null,
-    lat: null,
-    lng: null,
-    county: "BROOMFIELD",
     date_geocoded: "March 2020",
     data_source:
       "Office of Behavioral Health - Colorado Department of Human Services",
