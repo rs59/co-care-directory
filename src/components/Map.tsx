@@ -1,5 +1,4 @@
 import 'leaflet/dist/leaflet.css';
-import './Map.css';
 
 import markerIconPng from "leaflet/dist/images/marker-icon.png"
 import {Icon, LatLngLiteral} from 'leaflet'
