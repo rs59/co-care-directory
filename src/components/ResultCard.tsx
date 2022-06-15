@@ -16,7 +16,7 @@ export default function ResultCard({
       <CardHeader>
         <MilesAway meters={data.distance} />
         <Link to={`/result/${data.id}`} state={data}>
-          <h3 className="usa-card__heading margin-top-1">{data.name}</h3>
+          <h2 className="usa-card__heading margin-top-1">{data.name}</h2>
         </Link>
       </CardHeader>
       <CardBody>

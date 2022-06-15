@@ -73,7 +73,7 @@ function Search() {
       <GridContainer>
         <Grid row>
           <div className="padding-top-4">
-            <h2>Find care near you</h2>
+            <h1>Find care near you</h1>
             <div className="padding-bottom-2">
               <TextInput
                 id="zipcode"
