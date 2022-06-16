@@ -10,7 +10,7 @@ import Layout from './components/Layout';
 import Search from './pages/Search';
 import Home from './pages/Home';
 import ResultDetail from './pages/ResultDetail';
-
+import './i18n';
 
 function App() {
   return (
