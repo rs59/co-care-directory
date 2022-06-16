@@ -5,6 +5,7 @@ import { LatLngLiteral } from "leaflet";
 import {
   Button,
   CardGroup,
+  Form,
   Grid,
   GridContainer,
   TextInput,
@@ -35,7 +36,7 @@ function Search() {
   // Set search filters from URL params on initial page load 
   // to enable returning to filtered result set
   useEffect(() => {
-    if(zip) {
+    if (zip) {
       setSearchFilters(zip);
     }
   }, []);
@@ -45,7 +46,7 @@ function Search() {
     if (center) {
       const results = getMatchingCare(CARE_DATA, center, DEFAULT_RADIUS);
       setResults(results);
-    }
+    } else setResults([]);
   }, [center]);
 
   // Set search filters from input zip, and update 
@@ -54,8 +55,8 @@ function Search() {
 
     // Ensure search params match applied filters
     // to enable persistent filtered result set views
-    if(zip) setSearchParams({...searchParams, zip });
-    
+    if (zip) setSearchParams({ ...searchParams, zip });
+
     // @ts-ignore
     const center = zipToLatLong[zip]; // TODO: handle typing
     if (center) {
@@ -73,21 +74,26 @@ function Search() {
       <GridContainer>
         <Grid row>
           <div className="padding-top-4">
-            <h1>Find care near you</h1>
-            <div className="padding-bottom-2">
-              <TextInput
-                id="zipcode"
-                name="zipcode"
-                type="text"
-                placeholder="ZIP Code"
-                maxLength={5}
-                value={zip}
-                onChange={(evt) => setZip(evt.target.value)}
-              />
-            </div>
-            <Button type="button" onClick={() => setSearchFilters(zip)}>
-              Search
-            </Button>
+            <Form onSubmit={(evt) => {
+              evt.preventDefault();
+              setSearchFilters(zip)
+            }}>
+              <h1>Find care near you</h1>
+              <div className="padding-bottom-2">
+                <TextInput
+                  id="zipcode"
+                  name="zipcode"
+                  type="text"
+                  placeholder="ZIP Code"
+                  maxLength={5}
+                  value={zip}
+                  onChange={(evt) => setZip(evt.target.value)}
+                />
+              </div>
+              <Button type="submit">
+                Search
+              </Button>
+            </Form>
           </div>
         </Grid>
         <Grid row>
@@ -109,11 +115,11 @@ function Search() {
                 <ResultCard
                   data={result}
                   key={result.id}
-                ></ResultCard>
+                />
               ))}
         </CardGroup>
       </GridContainer>
-    </div >
+    </div>
   );
 }
 

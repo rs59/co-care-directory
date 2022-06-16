@@ -1,31 +1,28 @@
 import 'leaflet/dist/leaflet.css';
 
 import markerIconPng from "leaflet/dist/images/marker-icon.png"
-import {Icon, LatLngLiteral} from 'leaflet'
+import {Icon} from 'leaflet'
 
-import { MapContainer, MapContainerProps, Marker, Popup, TileLayer, TileLayerProps } from "react-leaflet";
+import { MapContainer, MapContainerProps, TileLayer, TileLayerProps } from "react-leaflet";
+import { PropsWithChildren } from 'react';
 
-function Map({ mapContainerProps, tileLayerProps, markerData } :
-  { 
-    mapContainerProps: MapContainerProps,
-    tileLayerProps : TileLayerProps,
-    markerData: { [key: string]: LatLngLiteral}
-  }
-) {
+// From https://stackoverflow.com/a/65549235
+const markerIcon = new Icon({iconUrl: markerIconPng, iconSize: [25, 41]});
+
+type TileMapProps = {
+  mapContainerProps: MapContainerProps,
+  tileLayerProps : TileLayerProps,
+}
+
+function TileMap({ mapContainerProps, tileLayerProps, children } : PropsWithChildren<TileMapProps>) {
 
   return (
-    <MapContainer style={{ height: '500px' }} zoom={7} {...mapContainerProps}>
+    <MapContainer style={{ height: '500px' }} scrollWheelZoom={false} zoom={7} {...mapContainerProps}>
       <TileLayer {...tileLayerProps} />
-      {Object.entries(markerData).map(([zip, latlng]) =>
-        // From https://stackoverflow.com/a/65549235
-        <Marker icon={new Icon({iconUrl: markerIconPng, iconSize: [25, 41]})} position={latlng} key={zip}>
-          <Popup>
-            Center for {zip}
-          </Popup>
-        </Marker>
-      )}
+      {children}
     </MapContainer>
   )
 }
 
-export default Map;
+export default TileMap;
+export { markerIcon }
