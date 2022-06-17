@@ -12,7 +12,6 @@ import Home from './pages/Home';
 import ResultDetail from './pages/ResultDetail';
 import Whoops from './pages/Whoops';
 
-
 function App() {
   return (
     <div className="App">
