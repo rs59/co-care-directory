@@ -26,6 +26,14 @@ def format_percentage(numerator, denominator):
     return str(round(numerator/denominator*100, 1))+"%"
 
 
+def count_results_within_radius(latlong, radius, locations):
+    count = 0
+    for location in locations:
+        if haversine_distance_miles((latlong["lat"], latlong["lng"]), (location["lat"], location["lng"])) <= radius:
+            count += 1
+    return count
+
+
 def run_spot_check():
 
     zip_to_latlong = {}
@@ -35,6 +43,7 @@ def run_spot_check():
     distances = []
     distances_by_zip = {zip: [] for zip in zip_to_latlong}
     all_co_zip_location_data = []
+    zip_result_counts = []
 
     with open('../geocoding_ladders/geocoded_ladders_extract.csv', 'r') as f:
         reader = csv.DictReader(f)
@@ -55,7 +64,7 @@ def run_spot_check():
                         "address": row["Provider Location Display Label"],
                         "zip": clean_zip,
                         "lat": row_lat,
-                        "long": row_long,
+                        "lng": row_long,
                         "latlong_source": row["latlong_source"],
                         "zip_center_lat": zip_center["lat"],
                         "zip_center_long": zip_center["lng"],
@@ -85,6 +94,25 @@ def run_spot_check():
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(sorted_zip_summaries)
+
+    # number of results per zip
+    for zip, latlong in zip_to_latlong.items():
+        zip_result_counts.append({
+            "zip": zip,
+            "results_within_1_mi": count_results_within_radius(latlong, 1, all_co_zip_location_data),
+            "results_within_5_mi": count_results_within_radius(latlong, 5, all_co_zip_location_data),
+            "results_within_10_mi": count_results_within_radius(latlong, 10, all_co_zip_location_data),
+            "results_within_15_mi": count_results_within_radius(latlong, 15, all_co_zip_location_data),
+            "results_within_20_mi": count_results_within_radius(latlong, 20, all_co_zip_location_data),
+            "results_within_25_mi": count_results_within_radius(latlong, 25, all_co_zip_location_data),
+        })
+    sorted_zip_result_counts = sorted(
+        zip_result_counts, key=lambda x: x["results_within_25_mi"], reverse=True)
+    with open('zip_radius_result_counts.csv', 'w', newline='') as f:
+        fieldnames = zip_result_counts[0].keys()
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(sorted_zip_result_counts)
 
     # worst offenders by location
     sorted_location_data = sorted(

@@ -1,4 +1,4 @@
-id,miles_to_zip_center,address,zip,lat,long,latlong_source,zip_center_lat,zip_center_long,geocoded_outside_co
+id,miles_to_zip_center,address,zip,lat,lng,latlong_source,zip_center_lat,zip_center_long,geocoded_outside_co
 0016100001HA3uQAAT,14.9,"421 Zang street_BR_ENCODED_Lakewood, CO 80228",80228,39.72197,-105.145767,ladders_open_data_20220610,39.76,-104.87,False
 0016100001HA4QfAAL,14.3,"12055 West 2nd Place_BR_ENCODED_Lakewood, CO 80228",80228,39.718678,-105.134613,ladders_open_data_20220610,39.76,-104.87,False
 0016100001HA3n8AAD,13.7,"11500 Security Avenue_BR_ENCODED_Lakewood, CO 80215",80215,39.737282,-105.126984,ladders_open_data_20220610,39.76,-104.87,False
