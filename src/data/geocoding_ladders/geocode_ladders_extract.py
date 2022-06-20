@@ -47,7 +47,8 @@ def process_data():
             if row["Account ID"] not in processed_accounts:
                 print(f'processing account id {row["Account ID"]}')
                 account_name = row["Account Name"]
-                address_string = f'{row["Billing Address Line 1"]}, {row["Billing City"]}, {row["Billing State/Province"]} {row["Billing Zip/Postal Code"]}'
+                address_string = row["Provider Location Display Label"].replace(
+                    "_BR_ENCODED_", ", ")
                 lat = None
                 long = None
                 source = None
