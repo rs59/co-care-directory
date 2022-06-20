@@ -1,10 +1,23 @@
+:root {
+  --black: #333333;
+  --link: #66CCFF;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  -moz-osx-font-smoothing: grayscale; 
+}
+
+.usa-link {
+  /*
+    TODO: Set up Sass so we can use default USWDS tokens
+    instead of !important ?
+  */
+  color: var(--link, blue) !important; 
 }
 
 code {

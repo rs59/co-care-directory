@@ -1,4 +1,4 @@
-import { Button, Grid, GridContainer } from "@trussworks/react-uswds";
+import { GridContainer } from "@trussworks/react-uswds";
 import { LatLngLiteral } from "leaflet";
 import { Marker, Popup } from "react-leaflet";
 
@@ -7,24 +7,10 @@ import zipToLatLong from "../data/colorado_zip_latlong.json";
 import { useTranslation } from "react-i18next";
 
 function Home() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const CO_CENTER: LatLngLiteral = { lat: 39.113014, lng: -105.358887 };
   return (
     <GridContainer>
-      <Grid row >
-        <Grid col={2}><p>Current language: {i18n.language}</p></Grid>
-        <Grid>
-          <Button
-            type="button"
-            onClick={() => {
-              if (i18n.language === 'en') i18n.changeLanguage('es');
-              else i18n.changeLanguage('en');
-            }
-            }>Change language
-          </Button>
-        </Grid>
-      </Grid>
-
       <h1>{t('home.heading')}</h1>
       <p>{t('home.description')}</p>
       <TileMap
