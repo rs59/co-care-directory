@@ -1,50 +1,26 @@
 import { latLng, LatLngLiteral } from "leaflet";
-
-export type CareEntity = {
-  x: number;
-  y: number;
-  id: number;
-  name: string;
-  address: string | null;
-  city: string;
-  state: string | null;
-  zip: string | null;
-  phone: string | null;
-  substance_abuse_services: string | null;
-  mental_health_settings: string | null;
-  additional_services: string | null;
-  languages_spoken: string | null;
-  population_served: string | null;
-  accessibility: string | null;
-  fees: string | null;
-  mon: string | null;
-  tue: string | null;
-  wed: string | null;
-  thu: string | null;
-  fri: string | null;
-  sat: string | null;
-  sun: string | null;
-  lat: number;
-  lng: number;
-  county: string;
-  date_geocoded: string;
-  data_source: string;
-  dataset_name: string;
-  distance?: number;
-};
+import { CareProvider, SearchResult } from "./types";
 
 export function getMatchingCare(
-  careData: CareEntity[],
+  careData: CareProvider[],
   center: LatLngLiteral,
   radius: number
-): CareEntity[] {
+): SearchResult[] {
   // calculate distance & sort results by distance
   const results = careData
     .map((result) => ({
       ...result,
-      distance: latLng(center).distanceTo([result.lat, result.lng]),
+      distance:
+        result.latitude && result.longitude
+          ? latLng(center).distanceTo([result.latitude, result.longitude])
+          : undefined,
     }))
     .sort((a, b) => {
+      if (a.distance === undefined) {
+        return 1;
+      } else if (b.distance === undefined) {
+        return -1;
+      }
       return a.distance - b.distance;
     });
 
@@ -53,9 +29,9 @@ export function getMatchingCare(
 
 /**
  * Helper function to parse filter values from URL search params
- * @param searchParams 
+ * @param searchParams
  * @returns Object containing search urls by name
  */
 export function parseSearchParams(searchParams: URLSearchParams) {
-  return { urlZip: searchParams.get('zip') ?? "" }
+  return { urlZip: searchParams.get("zip") ?? "" };
 }

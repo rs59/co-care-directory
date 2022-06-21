@@ -11,14 +11,14 @@ import {
   TextInput,
 } from "@trussworks/react-uswds";
 
-
-import { getMatchingCare, CareEntity, parseSearchParams } from "../util";
+import { getMatchingCare, parseSearchParams } from "../util";
 
 import ResultCard from "../components/ResultCard";
 
 import zipToLatLong from "../data/colorado_zip_latlong.json";
-import { CARE_DATA } from "../data/dummy_ladders_data";
+import CARE_PROVIDER_DATA from "../data/ladders_data.json";
 import { useSearchParams } from "react-router-dom";
+import { CareProvider, SearchResult } from "../types";
 
 // TODO: add ui for radius
 const DEFAULT_RADIUS = 8047; // 5 miles in meters
@@ -31,9 +31,9 @@ function Search() {
 
   const [center, setCenter] = useState<LatLngLiteral | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [results, setResults] = useState<CareEntity[]>([]);
+  const [results, setResults] = useState<SearchResult[]>([]);
 
-  // Set search filters from URL params on initial page load 
+  // Set search filters from URL params on initial page load
   // to enable returning to filtered result set
   useEffect(() => {
     if (zip) {
@@ -44,15 +44,18 @@ function Search() {
   // Update filtered results based on filter zip center
   useEffect(() => {
     if (center) {
-      const results = getMatchingCare(CARE_DATA, center, DEFAULT_RADIUS);
+      const results = getMatchingCare(
+        CARE_PROVIDER_DATA as CareProvider[],
+        center,
+        DEFAULT_RADIUS
+      );
       setResults(results);
     } else setResults([]);
   }, [center]);
 
-  // Set search filters from input zip, and update 
-  // zip center accordingly  
+  // Set search filters from input zip, and update
+  // zip center accordingly
   function setSearchFilters(zip: string) {
-
     // Ensure search params match applied filters
     // to enable persistent filtered result set views
     if (zip) setSearchParams({ ...searchParams, zip });
@@ -74,10 +77,12 @@ function Search() {
       <GridContainer>
         <Grid row>
           <div className="padding-top-4">
-            <Form onSubmit={(evt) => {
-              evt.preventDefault();
-              setSearchFilters(zip)
-            }}>
+            <Form
+              onSubmit={(evt) => {
+                evt.preventDefault();
+                setSearchFilters(zip);
+              }}
+            >
               <h1>Find care near you</h1>
               <div className="padding-bottom-2">
                 <TextInput
@@ -90,9 +95,7 @@ function Search() {
                   onChange={(evt) => setZip(evt.target.value)}
                 />
               </div>
-              <Button type="submit">
-                Search
-              </Button>
+              <Button type="submit">Search</Button>
             </Form>
           </div>
         </Grid>
@@ -111,12 +114,7 @@ function Search() {
           {results &&
             results
               .slice(0, MAX_RESULTS)
-              .map((result) => (
-                <ResultCard
-                  data={result}
-                  key={result.id}
-                />
-              ))}
+              .map((result) => <ResultCard data={result} key={result.id} />)}
         </CardGroup>
       </GridContainer>
     </div>

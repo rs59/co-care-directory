@@ -1,11 +1,10 @@
 # Colorado Care Directory by the Behavioral Health Administration
 
-## Notice 
+## Notice
 
 Right now this repo is just getting started and has been setup based on [github-repo-starter-template](https://github.com/jeffmaher/github-repo-starter-template).
 
 This text should be replaced with documentation relevant to developing and operating this application in the future.
-
 
 ## Dev Setup
 
@@ -21,22 +20,21 @@ Run these instructions whenever you change the `Dockerfile` or want to reset you
 
 1. Clone this repo
 1. Navigate into its base directory
-1. Run: 
-    - `docker build -t coloradodigitalservice/co-care-directory .`
-1. Then, you can jump into the container's command line: 
-    - `docker run -p 3000:3000 -it -v $PWD:/app --rm coloradodigitalservice/co-care-directory sh`
-    - Note: `$PWD` as the full path to the base directory. Change if you need something different.
-1. Download dependencies: 
-    - `npm install`
-    - Run whenever your `package.json` changes
-1. Start the debug server: 
-    - `npm start`
+1. Run:
+   - `docker build -t coloradodigitalservice/co-care-directory .`
+1. Then, you can jump into the container's command line:
+   - `docker run -p 3000:3000 -it -v $PWD:/app --rm coloradodigitalservice/co-care-directory sh`
+   - Note: `$PWD` as the full path to the base directory. Change if you need something different.
+1. Download dependencies:
+   - `npm install`
+   - Run whenever your `package.json` changes
+1. Start the debug server:
+   - `npm start`
 1. Access the app at `http://localhost:3000`
-
 
 ## Dev Setup (non-container)
 
-This is a simple, non-containerized setup, but might be impacted  by other things installed on your machine (i.e. other devs might experience things differently than you).
+This is a simple, non-containerized setup, but might be impacted by other things installed on your machine (i.e. other devs might experience things differently than you).
 
 ### Prerequisites
 
@@ -48,11 +46,11 @@ Install these items first:
 
 1. Clone this repo
 1. Navigate into its base directory
-1. Download dependencies: 
-    - `npm install`
-    - Run whenever your `package.json` changes
-1. Start the debug server: 
-    - `npm start`
+1. Download dependencies:
+   - `npm install`
+   - Run whenever your `package.json` changes
+1. Start the debug server:
+   - `npm start`
 1. Access the app at `http://localhost:3000`
 
 ## Heroku Review App Environment Setup
@@ -60,7 +58,7 @@ Install these items first:
 1. Create a pipeline
 1. Connect to GitHub
 1. Enable Review Apps, choosing these options:
-    - Automatically create review apps for new PRs
+   - Automatically create review apps for new PRs
 
 ## Heroku App Environment Setup
 
@@ -71,6 +69,14 @@ To do this, first install and login to [the Heroku CLI](https://devcenter.heroku
 1. Create a new app
 1. From the app's settings, go to the `Deploy` tab
 1. Go to either `Automatic deploys` or `Manual deploys` and choose the branch you'd like deployed and trigger a deployment.
-1. The deployment will initially fail because it doesn't understand that it is a container-based app. Issue this command from the Heroku CLI: 
-    - `heroku stack:set container -a (app name)`
+1. The deployment will initially fail because it doesn't understand that it is a container-based app. Issue this command from the Heroku CLI:
+   - `heroku stack:set container -a (app name)`
 1. Trigger another deployment
+
+## Processing Data
+
+We use a standalone script to transform a CSV export into a cleaned JSON file. To process data, run:
+
+```
+npm run processdata
+```
