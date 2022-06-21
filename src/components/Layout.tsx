@@ -1,6 +1,7 @@
-import { Header, Title, PrimaryNav } from '@trussworks/react-uswds';
-import { Link, Outlet } from 'react-router-dom';
-import Banner from './Banner';
+import { Header, Title, PrimaryNav } from "@trussworks/react-uswds";
+import { Link, Outlet } from "react-router-dom";
+import Banner from "./Banner";
+import { ReactComponent as ColoradoBhaLogo } from "../images/colorado_bha_logo.svg";
 
 function Layout() {
   return (
@@ -9,17 +10,20 @@ function Layout() {
         <Banner />
         <div className="usa-nav-container">
           <div className="usa-navbar">
-            <Title>
-              <a href="/" title="Home" aria-label="Home">
-                Colorado Care Directory Prototype
-              </a>
-            </Title>
+            <div className="usa-logo">
+              <Title>
+                <a href="/" title="Home" aria-label="Home">
+                  <ColoradoBhaLogo />
+                </a>
+              </Title>
+            </div>
           </div>
-          <PrimaryNav items={[<Link to="/search">Search</Link>]}/>
+          <PrimaryNav items={[<Link to="/search">Search</Link>]} />
         </div>
       </Header>
-
-      <Outlet />
+      <div className="usa-section">
+        <Outlet />
+      </div>
     </>
   );
 }
