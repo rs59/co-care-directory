@@ -83,14 +83,21 @@ def run_spot_check():
     print(f"{format_percentage(len(over_10), count)} of locations are over 10 miles from zip center")
 
     # worst offenders by zip
-    zip_summaries = [{"zip": zip, "avg_miles_from_center": round(statistics.mean(distances), 1), "median_miles_from_center": round(statistics.median(
-        distances), 1), "count_locations": len(distances)} for zip, distances in distances_by_zip.items() if len(distances)]
+    zip_summaries = [
+        {
+            "zip": zip,
+            "zip_center_lat": zip_to_latlong[zip]["lat"],
+            "zip_center_lng": zip_to_latlong[zip]["lng"],
+            "avg_miles_from_center": round(statistics.mean(distances), 1),
+            "median_miles_from_center": round(statistics.median(distances), 1),
+            "count_locations": len(distances)
+        }
+        for zip, distances in distances_by_zip.items() if len(distances)]
     sorted_zip_summaries = sorted(
         zip_summaries, key=lambda x: x["count_locations"], reverse=True)
     print("\nwriting to file: spot_check_zip_summaries.csv")
     with open('spot_check_zip_summaries.csv', 'w', newline='') as f:
-        fieldnames = ['zip', 'avg_miles_from_center',
-                      'median_miles_from_center', 'count_locations']
+        fieldnames = zip_summaries[0].keys()
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(sorted_zip_summaries)
@@ -99,15 +106,19 @@ def run_spot_check():
     for zip, latlong in zip_to_latlong.items():
         zip_result_counts.append({
             "zip": zip,
+            "zip_center_lat": zip_to_latlong[zip]["lat"],
+            "zip_center_lng": zip_to_latlong[zip]["lng"],
             "results_within_1_mi": count_results_within_radius(latlong, 1, all_co_zip_location_data),
             "results_within_5_mi": count_results_within_radius(latlong, 5, all_co_zip_location_data),
             "results_within_10_mi": count_results_within_radius(latlong, 10, all_co_zip_location_data),
             "results_within_15_mi": count_results_within_radius(latlong, 15, all_co_zip_location_data),
             "results_within_20_mi": count_results_within_radius(latlong, 20, all_co_zip_location_data),
             "results_within_25_mi": count_results_within_radius(latlong, 25, all_co_zip_location_data),
+            "results_within_50_mi": count_results_within_radius(latlong, 50, all_co_zip_location_data),
         })
     sorted_zip_result_counts = sorted(
-        zip_result_counts, key=lambda x: x["results_within_25_mi"], reverse=True)
+        zip_result_counts, key=lambda x: x["results_within_50_mi"], reverse=True)
+    print("\nwriting to file: zip_radius_result_counts.csv")
     with open('zip_radius_result_counts.csv', 'w', newline='') as f:
         fieldnames = zip_result_counts[0].keys()
         writer = csv.DictWriter(f, fieldnames=fieldnames)
