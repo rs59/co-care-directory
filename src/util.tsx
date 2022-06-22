@@ -1,10 +1,51 @@
-import { latLng } from "leaflet";
-import { CareProvider, SearchResult, ZipCenterLookup } from "./types";
+import { latLng, LatLngLiteral } from "leaflet";
+import {
+  CareProvider,
+  CareProviderSearchResult,
+  SearchResult,
+  ZipCenterLookup,
+} from "./types";
 import zipToLatLong from "./data/colorado_zip_latlong.json";
 
 export const DEFAULT_RADIUS_MILES = 10;
 
 export const METERS_IN_A_MILE = 1609.34;
+
+export const getZipCenter = (zip: string): LatLngLiteral | null =>
+  (zipToLatLong as ZipCenterLookup)[zip] || null;
+
+const addSearchMetadata = (
+  careProviders: CareProvider[],
+  searchLocation: LatLngLiteral
+): CareProviderSearchResult[] =>
+  careProviders.map((result) => ({
+    ...result,
+    distance:
+      result.latitude && result.longitude
+        ? latLng(searchLocation).distanceTo([result.latitude, result.longitude])
+        : undefined,
+  }));
+
+const isWithinRadius = (
+  careProvider: CareProviderSearchResult,
+  miles: number
+): boolean => {
+  const radiusMeters = miles * METERS_IN_A_MILE;
+  // TODO: figure out how places that don't have location will work w filters
+  return !!(careProvider.distance && careProvider.distance <= radiusMeters);
+};
+
+const compareDistance = (
+  a: CareProviderSearchResult,
+  b: CareProviderSearchResult
+): number => {
+  if (a.distance === undefined) {
+    return 1;
+  } else if (b.distance === undefined) {
+    return -1;
+  }
+  return a.distance - b.distance;
+};
 
 export function getMatchingCare(
   careData: CareProvider[],
@@ -19,7 +60,7 @@ export function getMatchingCare(
   }
 
   // get zip code center
-  const center = (zipToLatLong as ZipCenterLookup)[zip];
+  const center = getZipCenter(zip);
   if (!center) {
     return {
       results: [],
@@ -27,26 +68,10 @@ export function getMatchingCare(
     };
   }
 
-  // calculate distance & sort results by distance
-  // TODO: figure out how places that don't have location will work w filters
-  const radiusMeters = radiusMiles * METERS_IN_A_MILE;
-  const results = careData
-    .map((result) => ({
-      ...result,
-      distance:
-        result.latitude && result.longitude
-          ? latLng(center).distanceTo([result.latitude, result.longitude])
-          : undefined,
-    }))
-    .filter((result) => !!(result.distance && result.distance <= radiusMeters))
-    .sort((a, b) => {
-      if (a.distance === undefined) {
-        return 1;
-      } else if (b.distance === undefined) {
-        return -1;
-      }
-      return a.distance - b.distance;
-    });
+  // calculate distance, apply filters, & sort results by distance
+  const results = addSearchMetadata(careData, center)
+    .filter((result) => isWithinRadius(result, radiusMiles))
+    .sort(compareDistance);
 
   return { results, error: null };
 }
