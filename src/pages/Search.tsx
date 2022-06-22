@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { LatLngLiteral } from "leaflet";
-
-import {
-  Button,
-  CardGroup,
-  Form,
-  Grid,
-  GridContainer,
-  TextInput,
-} from "@trussworks/react-uswds";
+import { CardGroup, Grid, GridContainer } from "@trussworks/react-uswds";
 
 import { getMatchingCare, parseSearchParams } from "../util";
 
 import ResultCard from "../components/ResultCard";
 
-import zipToLatLong from "../data/colorado_zip_latlong.json";
 import CARE_PROVIDER_DATA from "../data/ladders_data.json";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { CareProvider, SearchResult } from "../types";
 
 // TODO: add ui for radius
@@ -26,97 +16,51 @@ const MAX_RESULTS = 50; // TODO: figure out how to limit results if there are to
 
 function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { urlZip } = parseSearchParams(searchParams);
-  const [zip, setZip] = useState<string>(urlZip);
+  const params = parseSearchParams(searchParams);
 
-  const [center, setCenter] = useState<LatLngLiteral | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
 
-  // Set search filters from URL params on initial page load
-  // to enable returning to filtered result set
+  const navigate = useNavigate();
+
   useEffect(() => {
-    if (zip) {
-      setSearchFilters(zip);
+    // zip is the only required filter - redirect to homepage if it doesn't exist
+    if (!params.zip) {
+      navigate("/", {
+        replace: true,
+      });
+    } else {
+      const result = getMatchingCare(
+        CARE_PROVIDER_DATA as CareProvider[],
+        params.zip,
+        parseInt(params.miles) || DEFAULT_RADIUS
+      );
+      setSearchResult(result);
     }
   }, []);
 
-  // Update filtered results based on filter zip center
-  useEffect(() => {
-    if (center) {
-      const results = getMatchingCare(
-        CARE_PROVIDER_DATA as CareProvider[],
-        center,
-        DEFAULT_RADIUS
-      );
-      setResults(results);
-    } else setResults([]);
-  }, [center]);
-
-  // Set search filters from input zip, and update
-  // zip center accordingly
-  function setSearchFilters(zip: string) {
-    // Ensure search params match applied filters
-    // to enable persistent filtered result set views
-    if (zip) setSearchParams({ ...searchParams, zip });
-
-    // @ts-ignore
-    const center = zipToLatLong[zip]; // TODO: handle typing
-    if (center) {
-      setCenter(center);
-      setError(null);
-    } else {
-      setCenter(null);
-      setError("This is not a ZIP Code in Colorado");
-    }
-  }
-
-  // TODO: validate zip
   return (
     <div className="Search">
-      <GridContainer>
-        <Grid row>
-          <div className="padding-top-4">
-            <Form
-              onSubmit={(evt) => {
-                evt.preventDefault();
-                setSearchFilters(zip);
-              }}
-            >
-              <h1>Find care near you</h1>
-              <div className="padding-bottom-2">
-                <TextInput
-                  id="zipcode"
-                  name="zipcode"
-                  type="text"
-                  placeholder="ZIP Code"
-                  maxLength={5}
-                  value={zip}
-                  onChange={(evt) => setZip(evt.target.value)}
-                />
-              </div>
-              <Button type="submit">Search</Button>
-            </Form>
-          </div>
-        </Grid>
-        <Grid row>
-          <div className="padding-top-4 padding-bottom-4">
-            {center && results !== null && (
-              <p className="text-primary">
-                There are {results.length} results. The center of the radius
-                search is {center.lat}, {center.lng}
-              </p>
+      {searchResult && (
+        <GridContainer>
+          <Grid row>
+            <div className="padding-top-0">
+              <h1>Results near {params.zip}</h1>
+              [TODO: add filters here]
+            </div>
+          </Grid>
+          <Grid row>
+            {searchResult.error ? (
+              <p className="text-error">{searchResult.error}</p>
+            ) : (
+              <CardGroup>
+                {searchResult.results.slice(0, MAX_RESULTS).map((result) => (
+                  <ResultCard data={result} key={result.id} />
+                ))}
+              </CardGroup>
             )}
-            {error && <p className="text-error">{error}</p>}
-          </div>
-        </Grid>
-        <CardGroup>
-          {results &&
-            results
-              .slice(0, MAX_RESULTS)
-              .map((result) => <ResultCard data={result} key={result.id} />)}
-        </CardGroup>
-      </GridContainer>
+          </Grid>
+        </GridContainer>
+      )}
     </div>
   );
 }

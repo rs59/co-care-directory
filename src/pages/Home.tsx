@@ -1,47 +1,82 @@
-import { GridContainer } from "@trussworks/react-uswds";
-import { LatLngLiteral } from "leaflet";
-import { Marker, Popup } from "react-leaflet";
+import React, { useState } from "react";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardGroup,
+  CardHeader,
+  Grid,
+  GridContainer,
+  Label,
+  TextInput,
+} from "@trussworks/react-uswds";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
-import TileMap, { markerIcon } from '../components/Map';
-import zipToLatLong from "../data/colorado_zip_latlong.json";
-import { useTranslation } from "react-i18next";
+import { DEFAULT_RADIUS_MILES } from "../util";
+
+const ZipButton = styled(Button)`
+  max-width: 6rem;
+  margin-right: 0;
+`;
 
 function Home() {
-  const { t } = useTranslation();
-  const CO_CENTER: LatLngLiteral = { lat: 39.113014, lng: -105.358887 };
+  const [zip, setZip] = useState<string>("");
+
+  const navigate = useNavigate();
+
   return (
     <GridContainer>
-      <h1>{t('home.heading')}</h1>
-      <p>{t('home.description')}</p>
-      <TileMap
-        tileLayerProps={{ url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }}
-        mapContainerProps={{ center: CO_CENTER }}
-      >
-        {Object.entries(zipToLatLong).map(([zip, latlng]) =>
-          <Marker icon={markerIcon} position={latlng} key={zip}>
-            <Popup>
-              Center for {zip}
-            </Popup>
-          </Marker>
-        )}
-      </TileMap>
-
-      <h2>Google Maps</h2>
-      <TileMap
-        tileLayerProps={{ url: "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", subdomains: ['mt0', 'mt1', 'mt2', 'mt3'] }}
-        mapContainerProps={{ center: CO_CENTER }}
-      >
-        {Object.entries(zipToLatLong).map(([zip, latlng]) =>
-          <Marker icon={markerIcon} position={latlng} key={zip}>
-            <Popup>
-              Center for {zip}
-            </Popup>
-          </Marker>
-        )}
-      </TileMap>
-
+      <Grid row className="padding-top-4">
+        <Grid col={12} tablet={{ col: 6 }}>
+          <CardGroup>
+            <Card>
+              <CardHeader>
+                <h1 className="usa-card__heading">
+                  Find behavioral health care that's right for you.
+                </h1>
+              </CardHeader>
+              <CardBody>
+                <p>Enter your zip code to find care near your area.</p>
+                <form
+                  onSubmit={(evt) => {
+                    evt.preventDefault();
+                    navigate(
+                      `/search?zip=${zip}&miles=${DEFAULT_RADIUS_MILES}`,
+                      {
+                        replace: false,
+                      }
+                    );
+                  }}
+                >
+                  <Label htmlFor="zip" className="margin-bottom-1">
+                    Zip code
+                  </Label>
+                  <div className="display-flex">
+                    <TextInput
+                      className="margin-top-0 margin-right-1"
+                      id="zip"
+                      name="zip"
+                      type="text"
+                      maxLength={5}
+                      value={zip}
+                      onChange={
+                        (evt) =>
+                          setZip(evt.target.value.replace(/[^0-9]+/g, "")) // only allow numbers
+                      }
+                    />
+                    <ZipButton type="submit" className="usa-button">
+                      Search
+                    </ZipButton>
+                  </div>
+                </form>
+              </CardBody>
+            </Card>
+          </CardGroup>
+        </Grid>
+      </Grid>
     </GridContainer>
-  )
+  );
 }
 
 export default Home;

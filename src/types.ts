@@ -35,6 +35,16 @@ export type CareProvider = {
   longitude: number | null;
 };
 
-export type SearchMetadata = { distance?: number };
+export type CareProviderSearchMetadata = { distance?: number };
 
-export type SearchResult = CareProvider & SearchMetadata;
+export type CareProviderSearchResult = CareProvider &
+  CareProviderSearchMetadata;
+
+export type SearchResult = {
+  results: CareProviderSearchResult[];
+  error: string | null;
+};
+
+export interface ZipCenterLookup {
+  [key: string]: { lat: number; lng: number };
+}

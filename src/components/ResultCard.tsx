@@ -3,9 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 
 import MilesAway from "./MilesAway";
 
-import { SearchResult } from "../types";
+import { CareProviderSearchResult } from "../types";
 
-export default function ResultCard({ data }: { data: SearchResult }) {
+export default function ResultCard({
+  data,
+}: {
+  data: CareProviderSearchResult;
+}) {
   const location = useLocation();
   return (
     <Card gridLayout={{ tablet: { col: 6 }, desktop: { col: 4 } }}>
