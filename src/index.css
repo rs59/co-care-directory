@@ -1,6 +1,7 @@
 :root {
   --black: #333333;
   --link: #66CCFF;
+  --data-icon: #05176C;
 }
 
 body {
@@ -12,12 +13,20 @@ body {
   -moz-osx-font-smoothing: grayscale; 
 }
 
-.usa-link {
+.usa-link, .usa-dark-background a {
   /*
     TODO: Set up Sass so we can use default USWDS tokens
     instead of !important ?
   */
-  color: var(--link, blue) !important; 
+  color: var(--link, blue); 
+}
+
+.data-icon {
+  color: var(--data-icon, darkblue);
+}
+
+.display-grid {
+  display: grid;
 }
 
 code {

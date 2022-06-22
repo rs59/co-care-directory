@@ -1,9 +1,5 @@
 import React from "react";
 
-import "@trussworks/react-uswds/lib/uswds.css";
-import "@trussworks/react-uswds/lib/index.css";
-import "./App.css";
-
 import { Route, Routes } from "react-router-dom";
 
 import Layout from "./components/Layout";
