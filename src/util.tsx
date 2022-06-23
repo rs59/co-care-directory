@@ -14,7 +14,7 @@ export const METERS_IN_A_MILE = 1609.34;
 export const getZipCenter = (zip: string): LatLngLiteral | null =>
   (zipToLatLong as ZipCenterLookup)[zip] || null;
 
-const addSearchMetadata = (
+export const addSearchMetadata = (
   careProviders: CareProvider[],
   searchLocation: LatLngLiteral
 ): CareProviderSearchResult[] =>
@@ -26,7 +26,7 @@ const addSearchMetadata = (
         : undefined,
   }));
 
-const isWithinRadius = (
+export const isWithinRadius = (
   careProvider: CareProviderSearchResult,
   miles: number
 ): boolean => {
@@ -35,7 +35,7 @@ const isWithinRadius = (
   return !!(careProvider.distance && careProvider.distance <= radiusMeters);
 };
 
-const compareDistance = (
+export const compareDistance = (
   a: CareProviderSearchResult,
   b: CareProviderSearchResult
 ): number => {
