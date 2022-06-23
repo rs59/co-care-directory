@@ -1,29 +1,37 @@
-import { HoursOfOperation } from "../../types";
+import { DailyHours, WeeklyHours } from "../../types";
 
-type HoursProps = {
-  hours: {
-    sunday: HoursOfOperation;
-    monday: HoursOfOperation;
-    tuesday: HoursOfOperation;
-    wednesday: HoursOfOperation;
-    thursday: HoursOfOperation;
-    friday: HoursOfOperation;
-    saturday: HoursOfOperation;
-  }
-}
+const formatDailyHours = (hours: DailyHours) => {
+  return hours.open ? `${hours.start} - ${hours.end}` : "Closed";
+};
 
-function Hours({ hours }: HoursProps) {
-  return (
+function Hours({ hours }: { hours: WeeklyHours }) {
+  return hours ? (
     <>
-      <div className="margin-bottom-1">Monday: {hours.monday ? `${hours.monday.start} - ${hours.monday.end}`: 'Closed'}</div>
-      <div className="margin-bottom-1">Tuesday: {hours.tuesday ? `${hours.tuesday.start} - ${hours.tuesday.end}`: 'Closed'}</div>
-      <div className="margin-bottom-1">Wednesday: {hours.wednesday ? `${hours.wednesday.start} - ${hours.wednesday.end}`: 'Closed'}</div>
-      <div className="margin-bottom-1">Thursday: {hours.thursday ? `${hours.thursday.start} - ${hours.thursday.end}`: 'Closed'}</div>
-      <div className="margin-bottom-1">Friday: {hours.friday ? `${hours.friday.start} - ${hours.friday.end}`: 'Closed'}</div>
-      <div className="margin-bottom-1">Saturday: {hours.saturday ? `${hours.saturday.start} - ${hours.saturday.end}`: 'Closed'}</div>
-      <div className="margin-bottom-1">Sunday: {hours.sunday ? `${hours.sunday.start} - ${hours.sunday.end}`: 'Closed'}</div>
+      <div className="margin-bottom-1">
+        Monday: {formatDailyHours(hours.monday)}
+      </div>
+      <div className="margin-bottom-1">
+        Tuesday: {formatDailyHours(hours.tuesday)}
+      </div>
+      <div className="margin-bottom-1">
+        Wednesday: {formatDailyHours(hours.wednesday)}
+      </div>
+      <div className="margin-bottom-1">
+        Thursday: {formatDailyHours(hours.thursday)}
+      </div>
+      <div className="margin-bottom-1">
+        Friday: {formatDailyHours(hours.friday)}
+      </div>
+      <div className="margin-bottom-1">
+        Saturday: {formatDailyHours(hours.saturday)}
+      </div>
+      <div className="margin-bottom-1">
+        Sunday: {formatDailyHours(hours.sunday)}
+      </div>
     </>
-  )
+  ) : (
+    <div className="margin-bottom-1">Please contact directly for hours</div>
+  );
 }
 
 export default Hours;

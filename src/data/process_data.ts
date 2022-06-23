@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
-import { CareProvider, HoursOfOperation } from "../types";
+import { CareProvider, DailyHours, WeeklyHours } from "../types";
 
 const INPUT_FILE = "./geocoding_ladders/geocoded_ladders_extract.csv";
 const OUTPUT_FILE = "./ladders_data.json";
@@ -82,23 +82,42 @@ type InputRow = {
   latlong_source: string;
 };
 
-const getHoursOfOperations = (hoursString: string): HoursOfOperation => {
+const splitBySemicolons = (input: string): string[] => {
+  return input ? input.split(";").map((str) => str.trim()) : [];
+};
+
+const getDailyHours = (hoursString: string): DailyHours => {
   if (!hoursString) {
-    return null;
+    return { open: false };
   } else {
     const parts = hoursString.split(" - ");
     if (parts.length !== 2) {
       throw new Error(`cannot parse hours: ${hoursString}`);
     }
     return {
+      open: true,
       start: parts[0],
       end: parts[0],
     };
   }
 };
 
-const splitBySemicolons = (input: string): string[] => {
-  return input ? input.split("; ") : [];
+const getHoursOfOperation = (row: InputRow): WeeklyHours => {
+  const hoursOfOperation = {
+    sunday: getDailyHours(row["Hours of Operation Sunday"]),
+    monday: getDailyHours(row["Hours of Operation Monday"]),
+    tuesday: getDailyHours(row["Hours of Operation Tuesday"]),
+    wednesday: getDailyHours(row["Hours of Operation Wednesday"]),
+    thursday: getDailyHours(row["Hours of Operation Thursday"]),
+    friday: getDailyHours(row["Hours of Operation Friday"]),
+    saturday: getDailyHours(row["Hours of Operation Saturday"]),
+  };
+  // if hours are missing for every day, treat hours of operation as unknown.
+  // otherwise, missing hours can reliably mean closed
+  if (Object.values(hoursOfOperation).every((v) => v.open === false)) {
+    return null;
+  }
+  return hoursOfOperation;
 };
 
 const transformRow = (row: InputRow): CareProvider => {
@@ -115,7 +134,10 @@ const transformRow = (row: InputRow): CareProvider => {
       hideAddress || !row["Provider Location Display Label"]
         ? []
         : row["Provider Location Display Label"].split("_BR_ENCODED_"),
-    website: row["Website"],
+    website:
+      row["Website"] && !row["Website"].startsWith("http")
+        ? `https://${row["Website"]}`
+        : row["Website"],
     substanceUse: {
       supported: !!(
         substanceUseServices.length ||
@@ -134,15 +156,7 @@ const transformRow = (row: InputRow): CareProvider => {
       services: mentalHealthServices,
     },
     populationsServed: splitBySemicolons(row["Population Served"]),
-    hours: {
-      sunday: getHoursOfOperations(row["Hours of Operation Sunday"]),
-      monday: getHoursOfOperations(row["Hours of Operation Monday"]),
-      tuesday: getHoursOfOperations(row["Hours of Operation Tuesday"]),
-      wednesday: getHoursOfOperations(row["Hours of Operation Wednesday"]),
-      thursday: getHoursOfOperations(row["Hours of Operation Thursday"]),
-      friday: getHoursOfOperations(row["Hours of Operation Friday"]),
-      saturday: getHoursOfOperations(row["Hours of Operation Saturday"]),
-    },
+    hours: getHoursOfOperation(row),
     accessibility: splitBySemicolons(row["Accessibility"]),
     fees: splitBySemicolons(row["Fee(s)"]),
     latitude: parseFloat(row["latitude"]) || null,

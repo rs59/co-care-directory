@@ -1,6 +1,19 @@
-export type HoursOfOperation = {
-  start: string;
-  end: string;
+export type DailyHours =
+  | {
+      open: true;
+      start: string;
+      end: string;
+    }
+  | { open: false };
+
+export type WeeklyHours = {
+  sunday: DailyHours;
+  monday: DailyHours;
+  tuesday: DailyHours;
+  wednesday: DailyHours;
+  thursday: DailyHours;
+  friday: DailyHours;
+  saturday: DailyHours;
 } | null;
 
 export type CareProvider = {
@@ -20,15 +33,7 @@ export type CareProvider = {
     services: string[];
   };
   populationsServed: string[];
-  hours: {
-    sunday: HoursOfOperation;
-    monday: HoursOfOperation;
-    tuesday: HoursOfOperation;
-    wednesday: HoursOfOperation;
-    thursday: HoursOfOperation;
-    friday: HoursOfOperation;
-    saturday: HoursOfOperation;
-  };
+  hours: WeeklyHours;
   accessibility: string[];
   fees: string[];
   latitude: number | null;
