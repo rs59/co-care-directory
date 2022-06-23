@@ -97,7 +97,7 @@ const getDailyHours = (hoursString: string): DailyHours => {
     return {
       open: true,
       start: parts[0],
-      end: parts[0],
+      end: parts[1],
     };
   }
 };
