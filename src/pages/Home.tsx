@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { DEFAULT_RADIUS_MILES } from "../util";
+import { useTranslation } from "react-i18next";
 
 const ZipButton = styled(Button)`
   max-width: 6rem;
@@ -21,6 +22,7 @@ const ZipButton = styled(Button)`
 `;
 
 function Home() {
+  const { t } = useTranslation();
   const [zip, setZip] = useState<string>("");
 
   const navigate = useNavigate();
@@ -32,12 +34,10 @@ function Home() {
           <CardGroup>
             <Card>
               <CardHeader>
-                <h1 className="usa-card__heading">
-                  Find behavioral health care that's right for you.
-                </h1>
+                <h1 className="usa-card__heading">{t("pages.home.heading")}</h1>
               </CardHeader>
               <CardBody>
-                <p>Enter your zip code to find care near your area.</p>
+                <p>{t("pages.home.zipPrompt")}</p>
                 <form
                   onSubmit={(evt) => {
                     evt.preventDefault();
@@ -50,7 +50,7 @@ function Home() {
                   }}
                 >
                   <Label htmlFor="zip" className="margin-bottom-1">
-                    Zip code
+                    {t("pages.commonLabels.zipInput")}
                   </Label>
                   <div className="display-flex">
                     <TextInput
@@ -66,7 +66,7 @@ function Home() {
                       }
                     />
                     <ZipButton type="submit" className="usa-button">
-                      Search
+                      {t("pages.commonLabels.searchButton")}
                     </ZipButton>
                   </div>
                 </form>

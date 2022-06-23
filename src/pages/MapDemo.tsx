@@ -11,8 +11,8 @@ function MapDemo() {
   const CO_CENTER: LatLngLiteral = { lat: 39.113014, lng: -105.358887 };
   return (
     <GridContainer>
-      <h1>{t("home.heading")}</h1>
-      <p>{t("home.description")}</p>
+      <h1>{t("pages.mapdemo.heading")}</h1>
+      <p>{t("pages.mapdemo.description")}</p>
       <TileMap
         tileLayerProps={{
           url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",

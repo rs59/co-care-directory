@@ -47,6 +47,7 @@ const compareDistance = (
   return a.distance - b.distance;
 };
 
+// TODO: figure out how to limit results if there are too many
 export function getMatchingCare(
   careData: CareProvider[],
   zip: string,
