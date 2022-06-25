@@ -53,3 +53,8 @@ export type SearchResult = {
 export interface ZipCenterLookup {
   [key: string]: { lat: number; lng: number };
 }
+
+export type SearchFilters = {
+  zip: string;
+  miles: number;
+};

@@ -1,5 +1,11 @@
 {
   "miles-away": "{{ miles }} miles away",
+  "SearchFiltersControl": {
+    "toggleFiltersButton": "Filter results",
+    "viewResultsButton": "View results",
+    "distance": "Distance",
+    "withinMiles": "Within {{n}} miles"
+  },
   "resultDetail": {
     "telephoneNumber": "Telephone number",
     "website": "Website",

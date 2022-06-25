@@ -13,8 +13,14 @@ import SearchResultCard from "../components/SearchResultCard";
 
 import CARE_PROVIDER_DATA from "../data/ladders_data.json";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { CareProvider, CareProviderSearchResult, SearchResult } from "../types";
+import {
+  CareProvider,
+  CareProviderSearchResult,
+  SearchFilters,
+  SearchResult,
+} from "../types";
 import { useTranslation } from "react-i18next";
+import SearchFiltersControl from "../components/SearchFiltersControl";
 
 // TODO: add ui for radius
 const DEFAULT_RADIUS = 8047; // 5 miles in meters
@@ -62,10 +68,24 @@ function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
   const params = parseSearchParams(searchParams);
 
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
+    zip: params.zip,
+    miles: parseInt(params.miles) || DEFAULT_RADIUS,
+  });
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [isListView, setIsListView] = useState<boolean>(true);
 
   const navigate = useNavigate();
+
+  const performSearch = (filters: SearchFilters) => {
+    // TODO: update args for getMatchingCare to use SearchFilter
+    const result = getMatchingCare(
+      CARE_PROVIDER_DATA as CareProvider[],
+      filters.zip,
+      filters.miles
+    );
+    setSearchResult(result);
+  };
 
   useEffect(() => {
     // zip is the only required filter - redirect to homepage if it doesn't exist
@@ -74,12 +94,7 @@ function Search() {
         replace: true,
       });
     } else {
-      const result = getMatchingCare(
-        CARE_PROVIDER_DATA as CareProvider[],
-        params.zip,
-        parseInt(params.miles) || DEFAULT_RADIUS
-      );
-      setSearchResult(result);
+      performSearch(searchFilters);
     }
   }, []);
 
@@ -112,7 +127,20 @@ function Search() {
             <h1>
               {t("pages.search.heading")} {params.zip}
             </h1>
-            <div className="margin-y-2">[TODO: add filters here]</div>
+            <div className="margin-y-2">
+              <SearchFiltersControl
+                currentFilters={searchFilters}
+                onApplyFilters={(filters) => {
+                  setSearchFilters(filters);
+                  performSearch(filters);
+                  // TODO: add helper?
+                  setSearchParams({
+                    zip: filters.zip,
+                    miles: filters.miles.toString(),
+                  });
+                }}
+              />
+            </div>
           </div>
           <div>
             {searchResult.error ? (
