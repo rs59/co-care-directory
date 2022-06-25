@@ -12,8 +12,14 @@
     "resultCount_one": "Result",
     "resultCount_other": "Results"
   },
-  "commonLabels": {
-    "zipInput": "Zip code",
-    "searchButton": "Search"
+  "resultDetail": {
+    "backToSearch": "Back to search",
+    "basicInfo": "Basic information",
+    "details": "Details",
+    "populationsServed": "Populations served",
+    "accessibilityOptions": "Accessibility options",
+    "specialities": "Specialities",
+    "substanceUseServices": "Substance use services",
+    "mentalHealthServices": "Mental health services"
   }
 }

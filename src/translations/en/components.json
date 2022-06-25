@@ -1,3 +1,10 @@
 {
-  "miles-away": "{{ miles }} miles away"
+  "miles-away": "{{ miles }} miles away",
+  "resultDetail": {
+    "telephoneNumber": "Telephone number",
+    "website": "Website",
+    "address": "Address",
+    "fees": "Fees",
+    "hours": "Hours of operation"
+  }
 }

@@ -1,35 +1,60 @@
 :root {
   --black: #333333;
-  --link: #66CCFF;
-  --data-icon: #05176C;
+  --grey: #51534b;
+  --link-dark: #66ccff;
+  --link: #337ab7;
+  --data-icon: #05176c;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale; 
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.usa-link, .usa-dark-background a {
+/* override USWDS settings */
+.usa-dark-background a {
   /*
     TODO: Set up Sass so we can use default USWDS tokens
     instead of !important ?
   */
-  color: var(--link, blue); 
+  color: var(--link-dark, lightblue);
 }
 
+.usa-link.usa-button {
+  color: white;
+}
+
+.usa-button {
+  background-color: var(--link, blue);
+}
+
+.usa-link {
+  color: var(--link, blue);
+}
+
+/* create custom classes and styles */
 .data-icon {
   color: var(--data-icon, darkblue);
 }
 
-.display-grid {
-  display: grid;
+.wrap-text {
+  word-break: break-word;
+}
+
+hr {
+  border: solid 1px;
+  border-color: var(--grey, grey);
+  opacity: 0.3;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }

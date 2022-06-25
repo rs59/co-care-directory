@@ -80,3 +80,9 @@ We use a standalone script to transform a CSV export into a cleaned JSON file. T
 ```
 npm run processdata
 ```
+
+## Using SVGs 
+Using SVGs in React apps is super easy. To make them fully component prop/CSS customizable ensure you do these things:
+1. Only set width or height (not both) on the main SVG element. This allows you to scale the size of the SVG by setting width/height prop on the component.
+1. set "fill" prop on <svg> element to be "currentColor". This allows you to color the SVG with CSS "color" property.
+1. DON'T set "fill" prop on any inner elements within the <svg>. This will prohibit you from dynamically setting the color with CSS "color" property. 

@@ -50,7 +50,7 @@ function Home() {
                   }}
                 >
                   <Label htmlFor="zip" className="margin-bottom-1">
-                    {t("pages.commonLabels.zipInput")}
+                    {t("common.zipInput")}
                   </Label>
                   <div className="display-flex">
                     <TextInput
@@ -66,7 +66,7 @@ function Home() {
                       }
                     />
                     <ZipButton type="submit" className="usa-button">
-                      {t("pages.commonLabels.searchButton")}
+                      {t("common.searchButton")}
                     </ZipButton>
                   </div>
                 </form>
