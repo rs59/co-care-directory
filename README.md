@@ -23,7 +23,7 @@ Run these instructions whenever you change the `Dockerfile` or want to reset you
 1. Run:
    - `docker build -t coloradodigitalservice/co-care-directory .`
 1. Then, you can jump into the container's command line:
-   - `docker run -p 3000:3000 -it -v $PWD:/app --rm coloradodigitalservice/co-care-directory sh`
+   - `docker run -p 3000:3000 -it -v $PWD:/app --rm coloradodigitalservice/co-care-directory bash`
    - Note: `$PWD` as the full path to the base directory. Change if you need something different.
 1. Download dependencies:
    - `npm install`
@@ -86,3 +86,51 @@ Using SVGs in React apps is super easy. To make them fully component prop/CSS cu
 1. Only set width or height (not both) on the main SVG element. This allows you to scale the size of the SVG by setting width/height prop on the component.
 1. set "fill" prop on <svg> element to be "currentColor". This allows you to color the SVG with CSS "color" property.
 1. DON'T set "fill" prop on any inner elements within the <svg>. This will prohibit you from dynamically setting the color with CSS "color" property. 
+
+## AWS Deployment
+
+### Pre-requisites
+
+Your environment should have the following installed:
+
+- Docker
+
+If you haven't built the Docker container yet, build it while at the root of the code base:
+
+```
+docker build -t coloradodigitalservice/co-care-directory-deploy .
+```
+
+### First time
+
+1. Setup a new AWS Account or login to an existing one that you have admin rights on
+1. [Create a user](https://us-east-1.console.aws.amazon.com/iamv2/home#/users)
+   1. User name: `terraform`
+   1. Select AWS credential type:
+      - ✅ Access key
+   1. Next
+   1. Attach existing policies directly
+      - ✅ AdministratorAccess (TODO: This grants anything. Remove this and specify only what's needed below)
+      - ✅ AmazonS3FullAccess
+   1. Set permission boundary: Create user without a permissions boundary (TODO Reduce this) 
+   1. Next
+   1. Next
+   1. Create user
+   1. Copy the user ID, access key ID, and secret access key
+   1. Close
+
+### Deploy
+
+
+1. Launch a terminal in the dev container
+   - `docker run -it --rm coloradodigitalservice/co-care-directory-deploy bash`
+1. Setup environment variables:
+   - `export TF_VAR_bucket_name` with a [valid name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) of the S3 bucket where built app files will be stored. This must be unique across all of AWS.
+   - `export AWS_ACCESS_KEY_ID="<your AWS user's access key ID>"` 
+   - `export AWS_SECRET_ACCESS_KEY="<your AWS secret access key>"` 
+1. Setup Terraform: `terraform init` (TODO: Remove this when state is stored centrally)
+1. Build the infrastructure:  `terraform apply` and then type `yes`
+1. Build the apps: `npm run build`
+1. Deploy the app's files: `aws s3 sync build/. s3://$TF_VAR_bucket_name --delete`
+1. Get the URL: `terraform output url` and then go there in your browser
+1. Take down the site: `terraform destroy` (TODO: Remove this when state is stored centrally)

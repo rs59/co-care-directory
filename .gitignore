@@ -18,3 +18,7 @@
 
 # VS Code
 .vscode
+
+# Terraform
+.terraform*
+terraform.tfstate*
