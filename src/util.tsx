@@ -1,4 +1,10 @@
-import { latLng, LatLngLiteral } from "leaflet";
+import {
+  latLng,
+  latLngBounds,
+  LatLngExpression,
+  LatLngLiteral,
+  LatLngTuple,
+} from "leaflet";
 import {
   CareProvider,
   CareProviderSearchResult,
@@ -16,14 +22,13 @@ export const getZipCenter = (zip: string): LatLngLiteral | null =>
 
 export const addSearchMetadata = (
   careProviders: CareProvider[],
-  searchLocation: LatLngLiteral
+  searchLocation: LatLngExpression
 ): CareProviderSearchResult[] =>
   careProviders.map((result) => ({
     ...result,
-    distance:
-      result.latitude && result.longitude
-        ? latLng(searchLocation).distanceTo([result.latitude, result.longitude])
-        : undefined,
+    distance: result.latlng
+      ? latLng(searchLocation).distanceTo(result.latlng)
+      : undefined,
   }));
 
 export const isWithinRadius = (
@@ -87,4 +92,26 @@ export function parseSearchParams(searchParams: URLSearchParams) {
     zip: searchParams.get("zip") ?? "",
     miles: searchParams.get("miles") ?? "",
   };
+}
+
+/**
+ * Helper function to get bounds for the search result map
+ * based on the returned set of CareProviderSearchResults
+ * @param searchResults
+ * @returns
+ */
+export function getResultBounds(searchResults: CareProviderSearchResult[]) {
+  return latLngBounds(
+    searchResults
+      .filter((result) => !!result.latlng)
+      .map((result) => result.latlng as LatLngTuple)
+  );
+}
+
+export function getGoogleMapsDirectionsURL(
+  careProvider: CareProviderSearchResult
+) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+    careProvider.address.join(", ")
+  )}`;
 }

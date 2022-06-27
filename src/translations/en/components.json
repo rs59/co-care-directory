@@ -1,6 +1,6 @@
 {
-  "miles-away": "{{ miles }} miles away",
-  "SearchFiltersControl": {
+  "milesAway": "{{ miles }} miles away",
+  "searchFiltersControl": {
     "toggleFiltersButton": "Filter results",
     "viewResultsButton": "View results",
     "distance": "Distance",

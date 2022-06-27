@@ -1,3 +1,5 @@
+import { LatLng } from "leaflet";
+
 export type DailyHours =
   | {
       open: true;
@@ -36,11 +38,12 @@ export type CareProvider = {
   hours: WeeklyHours;
   accessibility: string[];
   fees: string[];
-  latitude: number | null;
-  longitude: number | null;
+  latlng: [number, number] | null;
 };
 
-export type CareProviderSearchMetadata = { distance?: number };
+export type CareProviderSearchMetadata = {
+  distance?: number;
+};
 
 export type CareProviderSearchResult = CareProvider &
   CareProviderSearchMetadata;

@@ -18,6 +18,7 @@ import CARE_PROVIDER_DATA from "../data/ladders_data.json";
 import { CareProvider, CareProviderSearchResult } from "../types";
 import ResultDatum from "../components/ResultDetail/ResultDatum";
 import Horizontal from "../components/Horizontal";
+import { getGoogleMapsDirectionsURL } from "../util";
 
 function ResultDetail() {
   const { t } = useTranslation();
@@ -43,14 +44,7 @@ function ResultDetail() {
     return <Navigate replace to="/Whoops" />;
   }
 
-  const latLng =
-    data.latitude && data.longitude
-      ? { lat: data.latitude, lng: data.longitude }
-      : null;
-
-  const googleMapsDirectionsURL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-    data.address.join(", ")
-  )}`;
+  const googleMapsDirectionsURL = getGoogleMapsDirectionsURL(data);
 
   return (
     <GridContainer className="ResultDetail">
@@ -63,25 +57,25 @@ function ResultDetail() {
       </Link>
       <h1>{data.name}</h1>
       <section>
-        <h2 className="usa-sr-only">{t(`${T_PREFIX}basicInfo`)}</h2>
-        <Grid row className="flex-justify">
-          <Grid tablet={{ col: 5 }} className="tablet:order-last">
-            {latLng && data.address && (
-              <div>
+        <h2 className="usa-sr-only">Basic info</h2>
+        <Grid row>
+          <Grid tablet={{ col: true }} className="tablet:order-last">
+            {data.latlng && data.address && (
+              <div className="display-grid">
                 <Map
-                  mapContainerProps={{ center: latLng, zoom: 14 }}
+                  mapContainerProps={{ center: data.latlng, zoom: 14 }}
                   mapContainerStyles={{ flex: 1, height: "300px" }}
                 >
                   <Marker
                     icon={markerIcon}
-                    position={latLng}
+                    position={data.latlng}
                     interactive={false}
                   />
                 </Map>
 
                 <ExternalLink
                   variant="external"
-                  className="usa-button text-black margin-right-0 margin-y-2  display-flex flex-align-center flex-justify-center"
+                  className="usa-button margin-right-0 margin-y-2  display-flex flex-align-center flex-justify-center"
                   target="_blank "
                   href={googleMapsDirectionsURL}
                 >
@@ -92,11 +86,7 @@ function ResultDetail() {
             )}
           </Grid>
           <Grid tablet={{ col: 5 }}>
-            <BasicResultDetail
-              headingLevel="h3"
-              result={data}
-              directionsURL={googleMapsDirectionsURL}
-            />
+            <BasicResultDetail headingLevel="h3" result={data} />
           </Grid>
         </Grid>
       </section>
@@ -142,7 +132,7 @@ function ResultDetail() {
           )}
           {data.mentalHealth.supported && (
             <>
-              <h3>{t("mentalHealthServices")}:</h3>
+              <h3>{t(`${T_PREFIX}mentalHealthServices`)}:</h3>
               <ul>
                 {data.mentalHealth.services.map((service, idx) => (
                   <li key={idx} className="line-height-body-4">

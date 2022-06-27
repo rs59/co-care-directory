@@ -1,3 +1,4 @@
+import { LatLngTuple } from "leaflet";
 import { CareProvider } from "./types";
 import {
   DEFAULT_RADIUS_MILES,
@@ -21,8 +22,7 @@ const DUMMY_CARE_PROVIDER: CareProvider = {
   hours: null,
   accessibility: [],
   fees: [],
-  latitude: null,
-  longitude: null,
+  latlng: null,
 };
 
 // An invalid zipcode
@@ -32,11 +32,11 @@ const VALID_NOT_CO_ZIP = "10001";
 // A zipcode in Denver, CO
 const VALID_CO_ZIP = "80205";
 // A point close to Denver zipcode center, within DEFAULT_RADIUS
-const CLOSE = { lat: 39.74881, lng: -104.946169 };
+const CLOSE: LatLngTuple = [39.74881, -104.946169];
 // A point further away from Denver zipcode center, within DEFAULT_RADIUS
-const FURTHER = { lat: 39.751298, lng: -105.000184 };
+const FURTHER: LatLngTuple = [39.751298, -105.000184];
 // A point further away from Denver zipcode radius, outside DEFAULT_RADIUS
-const FAR = { lat: 37.938865, lng: -107.812949 };
+const FAR: LatLngTuple = [37.938865, -107.812949];
 
 describe("addSearchMetadata", () => {
   test("it adds distance to CareProviders with lat/lng data", () => {
@@ -47,8 +47,7 @@ describe("addSearchMetadata", () => {
       },
       {
         ...DUMMY_CARE_PROVIDER,
-        latitude: FURTHER.lat,
-        longitude: FURTHER.lng,
+        latlng: FURTHER,
         id: "distance",
       },
     ];
@@ -139,20 +138,17 @@ describe("getMatchingCare", () => {
       {
         ...DUMMY_CARE_PROVIDER,
         id: "close",
-        latitude: CLOSE.lat,
-        longitude: CLOSE.lng,
+        latlng: CLOSE,
       },
       {
         ...DUMMY_CARE_PROVIDER,
         id: "further",
-        latitude: FURTHER.lat,
-        longitude: FURTHER.lng,
+        latlng: FURTHER,
       },
       {
         ...DUMMY_CARE_PROVIDER,
         id: "far",
-        latitude: FAR.lat,
-        longitude: FAR.lng,
+        latlng: FAR,
       },
     ];
 

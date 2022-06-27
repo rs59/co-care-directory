@@ -1,9 +1,9 @@
 :root {
   --black: #333333;
   --grey: #51534b;
-  --link-dark: #66ccff;
-  --link: #337ab7;
-  --data-icon: #05176c;
+  --light-blue: #66ccff;
+  --blue: #337ab7;
+  --dark-blue: #05176c;
 }
 
 body {
@@ -17,28 +17,44 @@ body {
 
 /* override USWDS settings */
 .usa-dark-background a {
-  /*
-    TODO: Set up Sass so we can use default USWDS tokens
-    instead of !important ?
-  */
-  color: var(--link-dark, lightblue);
+  color: var(--light-blue, lightblue);
 }
 
 .usa-link.usa-button {
   color: white;
 }
 
-.usa-button {
-  background-color: var(--link, blue);
+.usa-button:not(.usa-button--outline):not(.usa-button--base) {
+  background-color: var(--blue, blue);
+}
+
+.usa-button--outline {
+  color: var(--darkblue, darkblue);
+  box-shadow: inset 0 0 0 2px var(--darkblue, darkblue);
+}
+
+.usa-button--base,
+.usa-button--base:hover {
+  background-color: var(--dark-blue, darkblue);
 }
 
 .usa-link {
-  color: var(--link, blue);
+  color: var(--blue, blue);
+}
+
+.usa-alert--info {
+  border: none;
+  background-color: var(--blue, blue);
+  color: white;
+}
+
+.usa-alert--info:before {
+  background-color: white;
 }
 
 /* create custom classes and styles */
 .data-icon {
-  color: var(--data-icon, darkblue);
+  color: var(--dark-blue, darkblue);
 }
 
 .wrap-text {

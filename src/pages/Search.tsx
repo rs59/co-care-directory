@@ -1,72 +1,144 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
-import {
-  Button,
-  ButtonGroup,
-  Grid,
-  GridContainer,
-} from "@trussworks/react-uswds";
+import { Alert, Grid, GridContainer } from "@trussworks/react-uswds";
+import { useTranslation } from "react-i18next";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { LatLngTuple, Map as LeafletMap } from "leaflet";
+import { Marker } from "react-leaflet";
 
-import { getMatchingCare, parseSearchParams } from "../util";
-
-import SearchResultCard from "../components/SearchResultCard";
-
+import { getMatchingCare, getResultBounds, parseSearchParams } from "../util";
 import CARE_PROVIDER_DATA from "../data/ladders_data.json";
-import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   CareProvider,
   CareProviderSearchResult,
   SearchFilters,
   SearchResult,
 } from "../types";
-import { useTranslation } from "react-i18next";
-import SearchFiltersControl from "../components/SearchFiltersControl";
+import SearchFiltersControl from "../components/Search/FiltersControl";
+import ResultCard from "../components/Search/ResultCard";
+import ResultsList from "../components/Search/ResultsList";
+import ResultsMap, { ResultsMapProps } from "../components/Search/ResultsMap";
+import MobileViewToggle, {
+  MobileViewToggleProps,
+} from "../components/Search/MobileViewToggle";
+import { markerIcon } from "../components/Map";
 
 // TODO: add ui for radius
 const DEFAULT_RADIUS = 8047; // 5 miles in meters
 
-const MobileResultsList = ({
-  results,
-}: {
-  results: CareProviderSearchResult[];
-}) => (
-  <>
-    {results.map((result) => (
-      <div
-        className="border border-base-lighter radius-lg padding-2 margin-bottom-1"
-        key={result.id}
+/**
+ * The side-by-side list + map view for desktop or tablet,
+ * which is visually hidden in mobile via CSS, but should still
+ * be picked up by screen readers
+ */
+const Desktop = ({ results }: { results: CareProviderSearchResult[] }) => (
+  <div className="display-none tablet:display-block">
+    <Grid row className="border-top border-base-lighter">
+      <Grid
+        tablet={{ col: 5 }}
+        className="height-viewport overflow-x-hidden"
+        key="desktop-list"
       >
-        <SearchResultCard data={result} key={result.id} />
-      </div>
-    ))}
-  </>
+        <ResultsList results={results} />
+      </Grid>
+      <Grid tablet={{ col: 7 }} key="desktop-map">
+        <ResultsMap bounds={getResultBounds(results)}>
+          {results
+            .filter((result) => !!result.latlng)
+            .map((result) => (
+              <Marker
+                position={result.latlng as LatLngTuple}
+                icon={markerIcon}
+                key={result.id}
+              />
+            ))}
+        </ResultsMap>
+      </Grid>
+    </Grid>
+  </div>
 );
 
-const MobileResultsMap = () => <div>TODO: mobile map</div>;
-
-const DesktopResultsList = ({
+/**
+ * The toggle-able list + map views for mobile,
+ * which are visually hidden in tablet/desktop via CSS
+ * and always hidden from screen readers (via aria-hidden=true)
+ * to avoid duplication of results lists to screen readers
+ */
+const Mobile = ({
+  isListView,
+  onShowMap,
+  onShowList,
+  mapRef,
   results,
-}: {
-  results: CareProviderSearchResult[];
-}) => (
-  <>
-    {results.map((result) => (
-      <div
-        className="border-bottom border-base-lighter padding-y-3"
-        key={result.id}
-      >
-        <SearchResultCard data={result} key={result.id} />
+}: MobileViewToggleProps &
+  Omit<ResultsMapProps, "bounds"> & {
+    results: CareProviderSearchResult[];
+  }) => {
+  const [selectedResult, setSelectedResult] =
+    useState<CareProviderSearchResult>();
+  return (
+    <div className="tablet:display-none" aria-hidden>
+      <MobileViewToggle
+        isListView={isListView}
+        onShowMap={onShowMap}
+        onShowList={onShowList}
+      />
+      <div className={isListView ? "" : "display-none"} key="mobile-list">
+        <ResultsList results={results} isMobile />
       </div>
-    ))}
-  </>
-);
-
-const DesktopResultsMap = () => <div>TODO: desktop map</div>;
+      <div className={isListView ? "display-none" : ""} key="mobile-map">
+        <Alert
+          type="info"
+          slim
+          headingLevel=""
+          className="radius-lg margin-y-2"
+        >
+          Tap a marker to pull up information for that location.
+        </Alert>
+        <div className="padding-x-2">
+          <ResultsMap
+            bounds={getResultBounds(results)}
+            mapRef={mapRef}
+            isMobile
+          >
+            {results
+              .filter((result) => !!result.latlng)
+              .map((result) => (
+                <Marker
+                  title={result.id}
+                  position={result.latlng as LatLngTuple}
+                  icon={markerIcon}
+                  key={result.id}
+                  eventHandlers={{
+                    click: (e) => {
+                      setSelectedResult(
+                        results.find((r) => r.id === result.id)
+                      );
+                    },
+                  }}
+                />
+              ))}
+          </ResultsMap>
+        </div>
+        {selectedResult && (
+          <div className="bg-white border border-base-lighter radius-lg padding-2 margin-bottom-1 position-relative top-neg-3 z-top">
+            <ResultCard data={selectedResult}>
+              <Link className="usa-button" to={`result/${selectedResult.id}`}>
+                Full detail about this location
+              </Link>
+            </ResultCard>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 function Search() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const params = parseSearchParams(searchParams);
+  const mapRef = useRef<LeafletMap>(null);
 
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     zip: params.zip,
@@ -74,6 +146,17 @@ function Search() {
   });
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [isListView, setIsListView] = useState<boolean>(true);
+  // Leaflet map must be manually re-rendered as a workaround
+  // to deal with initial hidden state when map is created
+  // OR could just render map view first to avoid this special map manipulation
+  const onShowMap = () => {
+    setIsListView(false);
+    setTimeout(() => {
+      mapRef.current?.invalidateSize();
+      searchResult &&
+        mapRef.current?.fitBounds(getResultBounds(searchResult.results));
+    }, 100);
+  };
 
   const navigate = useNavigate();
 
@@ -97,27 +180,6 @@ function Search() {
       performSearch(searchFilters);
     }
   }, []);
-
-  const mobileViewToggle = (
-    <div className="margin-bottom-2">
-      <ButtonGroup type="segmented">
-        <Button
-          type="button"
-          outline={!isListView}
-          onClick={() => setIsListView(true)}
-        >
-          List view
-        </Button>
-        <Button
-          type="button"
-          outline={isListView}
-          onClick={() => setIsListView(false)}
-        >
-          Map view
-        </Button>
-      </ButtonGroup>
-    </div>
-  );
 
   return (
     <div className="Search">
@@ -153,26 +215,14 @@ function Search() {
                     count: searchResult.results.length,
                   })}
                 </h2>
-                <div className="display-none tablet:display-block">
-                  <Grid row className="border-top border-base-lighter">
-                    <Grid col={5}>
-                      <DesktopResultsList results={searchResult.results} />
-                    </Grid>
-                    <Grid col={7}>
-                      <DesktopResultsMap />
-                    </Grid>
-                  </Grid>
-                </div>
-
-                <div className="tablet:display-none" aria-hidden>
-                  {mobileViewToggle}
-                  <div className={isListView ? "" : "display-none"}>
-                    <MobileResultsList results={searchResult.results} />
-                  </div>
-                  <div className={isListView ? "display-none" : ""}>
-                    <MobileResultsMap />
-                  </div>
-                </div>
+                <Desktop results={searchResult.results} />
+                <Mobile
+                  results={searchResult.results}
+                  isListView={isListView}
+                  onShowList={() => setIsListView(true)}
+                  onShowMap={onShowMap}
+                  mapRef={mapRef}
+                />
               </>
             )}
           </div>

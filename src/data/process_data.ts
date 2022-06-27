@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
 import { CareProvider, DailyHours, WeeklyHours } from "../types";
+import { LatLngTuple } from "leaflet";
 
 const INPUT_FILE = "./geocoding_ladders/geocoded_ladders_extract.csv";
 const OUTPUT_FILE = "./ladders_data.json";
@@ -120,6 +121,16 @@ const getHoursOfOperation = (row: InputRow): WeeklyHours => {
   return hoursOfOperation;
 };
 
+const getLatLng = (row: InputRow): LatLngTuple | null => {
+  const lat = parseFloat(row.latitude);
+  const lng = parseFloat(row.longitude);
+  if (!!(lat && lng)) {
+    return [lat, lng];
+  }
+
+  return null;
+};
+
 const transformRow = (row: InputRow): CareProvider => {
   const hideAddress = !!(row["Hide Address"] === "1");
   const substanceUseServices = splitBySemicolons(row["Substance Use Services"]);
@@ -159,8 +170,7 @@ const transformRow = (row: InputRow): CareProvider => {
     hours: getHoursOfOperation(row),
     accessibility: splitBySemicolons(row["Accessibility"]),
     fees: splitBySemicolons(row["Fee(s)"]),
-    latitude: parseFloat(row["latitude"]) || null,
-    longitude: parseFloat(row["longitude"]) || null,
+    latlng: getLatLng(row),
   };
   return cleaned;
 };

@@ -1,7 +1,7 @@
 import { Button, Fieldset, Radio } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { SearchFilters } from "../types";
+import { SearchFilters } from "../../types";
 
 function SearchFiltersControl({
   currentFilters,
@@ -33,15 +33,15 @@ function SearchFiltersControl({
         onClick={() => setIsExpanded(!isExpanded)}
         outline
       >
-        {t("components.SearchFiltersControl.toggleFiltersButton")}
+        {t("components.searchFiltersControl.toggleFiltersButton")}
       </Button>
       <div className={isExpanded ? "display-block" : "display-none"}>
         <div className="margin-y-3">
-          <Fieldset legend={t("components.SearchFiltersControl.distance")}>
+          <Fieldset legend={t("components.searchFiltersControl.distance")}>
             <Radio
               id="10"
               name="within 10 miles"
-              label={t("components.SearchFiltersControl.withinMiles", {
+              label={t("components.searchFiltersControl.withinMiles", {
                 n: 10,
               })}
               checked={filters.miles === 10}
@@ -51,7 +51,7 @@ function SearchFiltersControl({
             <Radio
               id="25"
               name="within 25 miles"
-              label={t("components.SearchFiltersControl.withinMiles", {
+              label={t("components.searchFiltersControl.withinMiles", {
                 n: 25,
               })}
               checked={filters.miles === 25}
@@ -61,7 +61,7 @@ function SearchFiltersControl({
             <Radio
               id="50"
               name="within 50 miles"
-              label={t("components.SearchFiltersControl.withinMiles", {
+              label={t("components.searchFiltersControl.withinMiles", {
                 n: 50,
               })}
               checked={filters.miles === 50}
@@ -71,7 +71,7 @@ function SearchFiltersControl({
             <Radio
               id="100"
               name="within 100 miles"
-              label={t("components.SearchFiltersControl.withinMiles", {
+              label={t("components.searchFiltersControl.withinMiles", {
                 n: 100,
               })}
               checked={filters.miles === 100}
@@ -88,7 +88,7 @@ function SearchFiltersControl({
             setIsExpanded(false);
           }}
         >
-          {t("components.SearchFiltersControl.viewResultsButton")}
+          {t("components.searchFiltersControl.viewResultsButton")}
         </Button>
       </div>
     </div>

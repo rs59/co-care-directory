@@ -11,18 +11,14 @@ import ResultDatum from "./ResultDatum";
 import Hours from "./Hours";
 
 import { CareProvider } from "../../types";
+import { getGoogleMapsDirectionsURL } from "../../util";
 
 type BasicResultDetailProps = {
   headingLevel: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
   result: CareProvider;
-  directionsURL: string;
 };
 
-function BasicResultDetail({
-  headingLevel,
-  result,
-  directionsURL,
-}: BasicResultDetailProps) {
+function BasicResultDetail({ headingLevel, result }: BasicResultDetailProps) {
   const { t } = useTranslation();
   const T_PREFIX = "components.resultDetail.";
   const Heading = headingLevel;
@@ -55,9 +51,9 @@ function BasicResultDetail({
       {result.address?.length && (
         <ResultDatum Icon={Location} key="address">
           <Heading className="usa-sr-only">{t(`${T_PREFIX}address`)}</Heading>
-          <div>{result.address.join("")}</div>
+          <div>{result.address.join(", ")}</div>
           <div className="margin-top-1">
-            <Link target="#" href={directionsURL}>
+            <Link target="#" href={getGoogleMapsDirectionsURL(result)}>
               {t(`common.getDirections`)}
             </Link>
           </div>
