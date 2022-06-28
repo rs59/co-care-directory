@@ -1,8 +1,4 @@
 {
-  "mapdemo": {
-    "heading": "Map Demos",
-    "description": "These maps show the center points for all CO zipcodes. They are zoomable, draggable, and clickable"
-  },
   "home": {
     "heading": "Find behavioral health care that's right for you.",
     "zipPrompt": "Enter your zip code to find care near your area"

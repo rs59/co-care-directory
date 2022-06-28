@@ -18,7 +18,6 @@ function Layout() {
               </Title>
             </div>
           </div>
-          <PrimaryNav items={[<Link to="/mapdemo">Map demo</Link>]} />
         </div>
       </Header>
       <div className="usa-section">

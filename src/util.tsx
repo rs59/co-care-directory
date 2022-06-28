@@ -10,10 +10,10 @@ import {
   CareProviderSearchResult,
   SearchFilters,
   SearchResult,
+  ZipData,
   TypeOfHelp,
-  ZipCenterLookup,
 } from "./types";
-import zipToLatLong from "./data/colorado_zip_latlong.json";
+import coloradoZipData from "./data/colorado_zip_data.json";
 
 export const DEFAULT_RADIUS_MILES = 10;
 
@@ -21,8 +21,10 @@ export const METERS_IN_A_MILE = 1609.34;
 
 export const MILE_DISTANCE_OPTIONS = [10, 25, 50, 100];
 
-export const getZipCenter = (zip: string): LatLngLiteral | null =>
-  (zipToLatLong as ZipCenterLookup)[zip] || null;
+export const getZipCenter = (zip: string): LatLngLiteral | null => {
+  const data = (coloradoZipData as ZipData)[zip];
+  return data ? { lat: data.centroid_lat, lng: data.centroid_lon } : null;
+};
 
 export const addSearchMetadata = (
   careProviders: CareProvider[],

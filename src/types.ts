@@ -141,8 +141,16 @@ export type SearchResult = {
   error: string | null;
 };
 
-export interface ZipCenterLookup {
-  [key: string]: { lat: number; lng: number };
+export interface ZipData {
+  [key: string]: {
+    PO_NAME: string;
+    STATE: string;
+    POPULATION: number | null;
+    POP_SQMI: number | null;
+    SQMI: number;
+    centroid_lon: number;
+    centroid_lat: number;
+  };
 }
 
 export type SearchFilters = {
