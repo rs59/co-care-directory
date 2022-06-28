@@ -17,9 +17,63 @@
     "basicInfo": "Basic information",
     "details": "Details",
     "populationsServed": "Populations served",
+    "_populationsServed": {
+      "Homeless": "Homeless",
+      "LGBT": "LGBT",
+      "Men": "Men",
+      "Military": "Military",
+      "OlderAdults": "Older Adults",
+      "PregnantWomen": "Pregnant Women",
+      "Women": "Women",
+      "Youth": "Youth",
+      "Offender": "Offender",
+      "Minors/Adolescents": "Minors/Adolescents",
+      "ClientsreferredfromCourt/JudicialSystem": "Clients referred from Court/Judicial System",
+      "AmericanIndian": "American Indian",
+      "HIV": "HIV"
+    },
     "accessibilityOptions": "Accessibility options",
+    "_accessibilityOptions": {
+      "Deaf/HardofHearing": "Deaf/Hard of Hearing",
+      "VisuallyImpaired": "Visually Impaired",
+      "Wheelchair": "Wheelchair"
+    },
     "specialities": "Specialities",
     "substanceUseServices": "Substance use services",
-    "mentalHealthServices": "Mental health services"
+    "_substanceUseServices": {
+      "ClinicallyManagedHighIntensityResidentialServices": "Clinically Managed High Intensity Residential Services",
+      "ClinicallyManagedLowIntensityResidentialServices": "Clinically Managed Low Intensity Residential Services",
+      "ClinicallyManagedMediumIntensityResidentialServices": "Clinically Managed Medium Intensity Residental Services",
+      "ClinicallyManagedResidentialDetoxification": "Clinically Managed Residential Detoxification",
+      "DayTreatment(PartialHospitalization)": "Day Treatment (Partial Hospitalization)",
+      "DUI/DWI": "DUI/DWI",
+      "Education&TreatmentServicesforPersonsinCriminalJusticeSystem": "Education & Treatment Services for Persons in Criminal Justice System",
+      "GenderResponsiveTreatmentforWomen": "Gender Responsive Treatment for Women",
+      "GeneralTreatment": "General Treatment",
+      "IntensiveOutpatient": "Intensive Outpatient",
+      "MedicallyMonitoredInpatientDetoxification": "Medically Monitored Inpatient Detoxification",
+      "MedicallyMonitoredIntensiveResidentialTreatment": "Medically Monitored Intensive Residental Treatment",
+      "MedicationAssistedTherapy": "Medication Assisted Therapy",
+      "OpioidTreatmentPrograms": "Opioid Treatment Programs",
+      "Outpatient": "Outpatient",
+      "YouthTreatment": "Youth Treatment"
+    },
+    "mentalHealthServices": "Mental health services",
+    "_mentalHealthServices": {
+      "72-HourTreatment&Evaluation": "72-Hour Treatment & Evaluation",
+      "AcuteTreatmentUnit": "Acute Treatment Unit",
+      "CommunityMentalHealthCenter": "Community Mental Health Center",
+      "CommunityMentalHealthClinic": "Community Mental Health Clinic",
+      "CrisisStabilizationUnit": "Crisis Stabilization Unit",
+      "DayTreatment": "Day Treatment",
+      "Emergency": "Emergency",
+      "Hospital": "Hospital",
+      "IntensiveOutpatient": "Intensive Outpatient",
+      "Outpatient": "Outpatient",
+      "PsychiatricResidential": "Psychiatric Residential",
+      "ResidentialChildCareFacility": "Residential Child Care Facility",
+      "ResidentialLongTermTreatment": "Residential Long Term Treatment",
+      "ResidentialShortTermTreatment": "Residential Short Term Treatment"
+    }
   }
 }

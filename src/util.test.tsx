@@ -1,5 +1,19 @@
 import { LatLngTuple } from "leaflet";
-import { CareProvider } from "./types";
+import {
+  AccessibilityOptions,
+  ACCESSIBILITY_OPTIONS,
+  CareProvider,
+  Fees,
+  FEES,
+  Languages,
+  LANGUAGES,
+  MentalHealthServices,
+  MENTAL_HEALTH_SERVICES,
+  PopulationsServed,
+  POPULATIONS_SERVED,
+  SubstanceUseServices,
+  SUBSTANCE_USE_SERVICES,
+} from "./types";
 import {
   DEFAULT_RADIUS_MILES,
   addSearchMetadata,
@@ -16,12 +30,37 @@ const DUMMY_CARE_PROVIDER: CareProvider = {
   hideAddress: false,
   address: [],
   website: "",
-  substanceUse: { supported: false, services: [] },
-  mentalHealth: { supported: false, services: [] },
-  populationsServed: [],
+  substanceUse: {
+    supported: false,
+    services: SUBSTANCE_USE_SERVICES.reduce((map, val) => {
+      map[val] = false;
+      return map;
+    }, {} as { [key in SubstanceUseServices]: boolean }),
+  },
+  mentalHealth: {
+    supported: false,
+    services: MENTAL_HEALTH_SERVICES.reduce((map, val) => {
+      map[val] = false;
+      return map;
+    }, {} as { [key in MentalHealthServices]: boolean }),
+  },
+  populationsServed: POPULATIONS_SERVED.reduce((map, val) => {
+    map[val] = false;
+    return map;
+  }, {} as { [key in PopulationsServed]: boolean }),
   hours: null,
-  accessibility: [],
-  fees: [],
+  accessibility: ACCESSIBILITY_OPTIONS.reduce((map, val) => {
+    map[val] = false;
+    return map;
+  }, {} as { [key in AccessibilityOptions]: boolean }),
+  fees: FEES.reduce((map, val) => {
+    map[val] = false;
+    return map;
+  }, {} as { [key in Fees]: boolean }),
+  languages: LANGUAGES.reduce((map, val) => {
+    map[val] = false;
+    return map;
+  }, {} as { [key in Languages]: boolean }),
   latlng: null,
 };
 

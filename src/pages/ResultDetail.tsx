@@ -19,6 +19,8 @@ import { CareProvider, CareProviderSearchResult } from "../types";
 import ResultDatum from "../components/ResultDetail/ResultDatum";
 import Horizontal from "../components/Horizontal";
 import { getGoogleMapsDirectionsURL } from "../util";
+import CommaSeparatedList from "../components/CommaSeparatedList";
+import BulletedList from "../components/BulletedList";
 
 function ResultDetail() {
   const { t } = useTranslation();
@@ -100,7 +102,10 @@ function ResultDetail() {
                 <h3 className="font-body-sm display-inline">
                   {t(`${T_PREFIX}populationsServed`)}:{" "}
                 </h3>
-                {data.populationsServed.join(", ")}
+                <CommaSeparatedList
+                  boolMap={data.populationsServed}
+                  translationPrefix={`${T_PREFIX}_populationsServed.`}
+                />
               </div>
             </ResultDatum>
             <ResultDatum Icon={Accessibility} key="accessibility">
@@ -108,7 +113,10 @@ function ResultDetail() {
                 <h3 className="font-body-sm display-inline">
                   {t(`${T_PREFIX}accessibilityOptions`)}:{" "}
                 </h3>
-                {data.accessibility.join(", ")}
+                <CommaSeparatedList
+                  boolMap={data.accessibility}
+                  translationPrefix={`${T_PREFIX}_accessibilityOptions.`}
+                />
               </div>
             </ResultDatum>
           </Grid>
@@ -122,11 +130,11 @@ function ResultDetail() {
             <>
               <h3>{t(`${T_PREFIX}substanceUseServices`)}:</h3>
               <ul>
-                {data.substanceUse.services.map((service, idx) => (
-                  <li key={idx} className="line-height-body-4">
-                    {service}
-                  </li>
-                ))}
+                <BulletedList
+                  boolMap={data.substanceUse.services}
+                  translationPrefix={`${T_PREFIX}_substanceUseServices.`}
+                  className="line-heigh-body-4"
+                />
               </ul>
             </>
           )}
@@ -134,11 +142,11 @@ function ResultDetail() {
             <>
               <h3>{t(`${T_PREFIX}mentalHealthServices`)}:</h3>
               <ul>
-                {data.mentalHealth.services.map((service, idx) => (
-                  <li key={idx} className="line-height-body-4">
-                    {service}
-                  </li>
-                ))}
+                <BulletedList
+                  boolMap={data.mentalHealth.services}
+                  translationPrefix={`${T_PREFIX}_mentalHealthServices.`}
+                  className="line-heigh-body-4"
+                />
               </ul>
             </>
           )}

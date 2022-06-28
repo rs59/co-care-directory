@@ -1,7 +1,18 @@
 import * as fs from "fs";
 import * as path from "path";
 import { parse } from "csv-parse/sync";
-import { CareProvider, DailyHours, WeeklyHours } from "../types";
+import {
+  ACCESSIBILITY_OPTIONS,
+  CareProvider,
+  DailyHours,
+  FEES,
+  LANGUAGES,
+  MENTAL_HEALTH_SERVICES,
+  POPULATIONS_SERVED,
+  SubstanceUseServices,
+  SUBSTANCE_USE_SERVICES,
+  WeeklyHours,
+} from "../types";
 import { LatLngTuple } from "leaflet";
 
 const INPUT_FILE = "./geocoding_ladders/geocoded_ladders_extract.csv";
@@ -87,6 +98,21 @@ const splitBySemicolons = (input: string): string[] => {
   return input ? input.split(";").map((str) => str.trim()) : [];
 };
 
+function getBooleanMap<T extends string>(keys: readonly T[], values: string[]) {
+  const stripped = values.map((val) => val.replaceAll(" ", ""));
+  stripped.forEach((val) => {
+    if (!keys.includes(val as T)) {
+      console.log(
+        `value ${val} found but missing from type: ${keys.join(", ")}`
+      );
+    }
+  });
+  return keys.reduce((boolMap, key) => {
+    boolMap[key] = stripped.includes(key);
+    return boolMap;
+  }, {} as { [key in T]: boolean });
+}
+
 const getDailyHours = (hoursString: string): DailyHours => {
   if (!hoursString) {
     return { open: false };
@@ -155,7 +181,7 @@ const transformRow = (row: InputRow): CareProvider => {
         row["Active SUD License"] === "1" ||
         row["Opioid Treatment Programs"] === "1"
       ),
-      services: substanceUseServices,
+      services: getBooleanMap(SUBSTANCE_USE_SERVICES, substanceUseServices),
     },
     mentalHealth: {
       supported: !!(
@@ -164,12 +190,22 @@ const transformRow = (row: InputRow): CareProvider => {
         row["Community Mental Health Center"] === "1" ||
         row["Community Mental Health Clinic"] === "1"
       ),
-      services: mentalHealthServices,
+      services: getBooleanMap(MENTAL_HEALTH_SERVICES, mentalHealthServices),
     },
-    populationsServed: splitBySemicolons(row["Population Served"]),
+    populationsServed: getBooleanMap(
+      POPULATIONS_SERVED,
+      splitBySemicolons(row["Population Served"])
+    ),
     hours: getHoursOfOperation(row),
-    accessibility: splitBySemicolons(row["Accessibility"]),
-    fees: splitBySemicolons(row["Fee(s)"]),
+    accessibility: getBooleanMap(
+      ACCESSIBILITY_OPTIONS,
+      splitBySemicolons(row["Accessibility"])
+    ),
+    fees: getBooleanMap(FEES, splitBySemicolons(row["Fee(s)"])),
+    languages: getBooleanMap(
+      LANGUAGES,
+      splitBySemicolons(row["Languages Spoken"])
+    ),
     latlng: getLatLng(row),
   };
   return cleaned;

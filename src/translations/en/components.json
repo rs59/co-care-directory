@@ -11,6 +11,12 @@
     "website": "Website",
     "address": "Address",
     "fees": "Fees",
+    "_fees": {
+      "Medicaid": "Medicade",
+      "PrivateInsurance": "Private Insurance",
+      "SelfPay": "Self Pay",
+      "SlidingFeeScale": "Sliding Fee Scale"
+    },
     "hours": "Hours of operation"
   }
 }

@@ -115,3 +115,14 @@ export function getGoogleMapsDirectionsURL(
     careProvider.address.join(", ")
   )}`;
 }
+
+/**
+ * Helper function to check if any properties in the given
+ * boolean map are 'true'; used to optionally display chunks
+ * of data in UI
+ * @param boolMap
+ * @returns
+ */
+export function anyAreTrue(boolMap: { [key: string]: boolean }) {
+  return Object.values(boolMap).some((bool) => !!bool);
+}

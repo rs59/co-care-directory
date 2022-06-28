@@ -11,7 +11,8 @@ import ResultDatum from "./ResultDatum";
 import Hours from "./Hours";
 
 import { CareProvider } from "../../types";
-import { getGoogleMapsDirectionsURL } from "../../util";
+import { anyAreTrue, getGoogleMapsDirectionsURL } from "../../util";
+import CommaSeparatedList from "../CommaSeparatedList";
 
 type BasicResultDetailProps = {
   headingLevel: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
@@ -59,13 +60,16 @@ function BasicResultDetail({ headingLevel, result }: BasicResultDetailProps) {
           </div>
         </ResultDatum>
       )}
-      {!!result.fees?.length && (
+      {!!anyAreTrue(result.fees) && (
         <ResultDatum Icon={DollarSign} key="fees">
           <div>
             <Heading className="font-body-sm display-inline">
               {t(`${T_PREFIX}fees`)}:{" "}
             </Heading>
-            {result.fees.join("; ")}
+            <CommaSeparatedList
+              boolMap={result.fees}
+              translationPrefix={`${T_PREFIX}_fees.`}
+            />
           </div>
           <div className="margin-top-1">TODO: MORE INFO HERE</div>
         </ResultDatum>
