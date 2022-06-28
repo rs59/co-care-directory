@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import { Alert, Grid, GridContainer } from "@trussworks/react-uswds";
+import { Alert, Button, Grid, GridContainer } from "@trussworks/react-uswds";
 import { useTranslation } from "react-i18next";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { LatLngTuple, Map as LeafletMap } from "leaflet";
@@ -21,7 +21,8 @@ import ResultsMap, { ResultsMapProps } from "../components/Search/ResultsMap";
 import MobileViewToggle, {
   MobileViewToggleProps,
 } from "../components/Search/MobileViewToggle";
-import { markerIcon } from "../components/Map";
+import { markerIcon, markerActiveIcon } from "../components/Map";
+import { ReactComponent as Close } from "../images/close.svg";
 
 // TODO: add ui for radius
 const DEFAULT_RADIUS = 8047; // 5 miles in meters
@@ -31,32 +32,48 @@ const DEFAULT_RADIUS = 8047; // 5 miles in meters
  * which is visually hidden in mobile via CSS, but should still
  * be picked up by screen readers
  */
-const Desktop = ({ results }: { results: CareProviderSearchResult[] }) => (
-  <div className="display-none tablet:display-block">
-    <Grid row className="border-top border-base-lighter">
-      <Grid
-        tablet={{ col: 5 }}
-        className="height-viewport overflow-x-hidden"
-        key="desktop-list"
-      >
-        <ResultsList results={results} />
+const Desktop = ({ results }: { results: CareProviderSearchResult[] }) => {
+  const [selectedResultId, setSelectedResultId] = useState<string>("");
+  return (
+    <div className="display-none tablet:display-block">
+      <Grid row className="border-top border-base-lighter">
+        <Grid
+          tablet={{ col: 5 }}
+          className="height-viewport overflow-x-hidden"
+          key="desktop-list"
+        >
+          <ResultsList results={results} selectedResultId={selectedResultId} />
+        </Grid>
+        <Grid tablet={{ col: 7 }} key="desktop-map">
+          <ResultsMap bounds={getResultBounds(results)}>
+            {results
+              .filter((result) => !!result.latlng)
+              .map((result) => (
+                <Marker
+                  position={result.latlng as LatLngTuple}
+                  icon={
+                    selectedResultId === result.id
+                      ? markerActiveIcon
+                      : markerIcon
+                  }
+                  zIndexOffset={
+                    selectedResultId === result.id ? 1000 : undefined
+                  }
+                  key={result.id}
+                  eventHandlers={{
+                    click: () => {
+                      setSelectedResultId(result.id);
+                      document.getElementById(result.id)?.scrollIntoView();
+                    },
+                  }}
+                />
+              ))}
+          </ResultsMap>
+        </Grid>
       </Grid>
-      <Grid tablet={{ col: 7 }} key="desktop-map">
-        <ResultsMap bounds={getResultBounds(results)}>
-          {results
-            .filter((result) => !!result.latlng)
-            .map((result) => (
-              <Marker
-                position={result.latlng as LatLngTuple}
-                icon={markerIcon}
-                key={result.id}
-              />
-            ))}
-        </ResultsMap>
-      </Grid>
-    </Grid>
-  </div>
-);
+    </div>
+  );
+};
 
 /**
  * The toggle-able list + map views for mobile,
@@ -100,6 +117,11 @@ const Mobile = ({
             bounds={getResultBounds(results)}
             mapRef={mapRef}
             isMobile
+            onClick={() => {
+              // Clear selected result card when map is
+              // clicked anywhere that is not a marker
+              setSelectedResult(undefined);
+            }}
           >
             {results
               .filter((result) => !!result.latlng)
@@ -107,7 +129,11 @@ const Mobile = ({
                 <Marker
                   title={result.id}
                   position={result.latlng as LatLngTuple}
-                  icon={markerIcon}
+                  icon={
+                    selectedResult?.id === result.id
+                      ? markerActiveIcon
+                      : markerIcon
+                  }
                   key={result.id}
                   eventHandlers={{
                     click: (e) => {
@@ -121,7 +147,19 @@ const Mobile = ({
           </ResultsMap>
         </div>
         {selectedResult && (
-          <div className="bg-white border border-base-lighter radius-lg padding-2 margin-bottom-1 position-relative top-neg-3 z-top">
+          <div className="bg-white border border-base-lighter radius-lg padding-2 margin-bottom-1 position-relative top-neg-50px z-top">
+            <Grid className="flex-justify-end" row>
+              <Grid col="auto">
+                <Button
+                  type="button"
+                  unstyled
+                  className="flex-align-center"
+                  onClick={() => setSelectedResult(undefined)}
+                >
+                  Close <Close />
+                </Button>
+              </Grid>
+            </Grid>
             <ResultCard data={selectedResult}>
               <Link className="usa-button" to={`result/${selectedResult.id}`}>
                 Full detail about this location

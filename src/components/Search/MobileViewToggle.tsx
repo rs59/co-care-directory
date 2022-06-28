@@ -1,5 +1,4 @@
 import { ButtonGroup, Button } from "@trussworks/react-uswds";
-import styled from "styled-components";
 
 export type MobileViewToggleProps = {
   isListView: boolean;
