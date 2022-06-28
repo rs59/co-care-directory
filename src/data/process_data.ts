@@ -181,6 +181,7 @@ const transformRow = (row: InputRow): CareProvider => {
         row["Active SUD License"] === "1" ||
         row["Opioid Treatment Programs"] === "1"
       ),
+      duiSupported: row["DUI/DWI"] === "1",
       services: getBooleanMap(SUBSTANCE_USE_SERVICES, substanceUseServices),
     },
     mentalHealth: {

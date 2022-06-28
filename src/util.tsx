@@ -8,7 +8,9 @@ import {
 import {
   CareProvider,
   CareProviderSearchResult,
+  SearchFilters,
   SearchResult,
+  TypeOfHelp,
   ZipCenterLookup,
 } from "./types";
 import zipToLatLong from "./data/colorado_zip_latlong.json";
@@ -16,6 +18,8 @@ import zipToLatLong from "./data/colorado_zip_latlong.json";
 export const DEFAULT_RADIUS_MILES = 10;
 
 export const METERS_IN_A_MILE = 1609.34;
+
+export const MILE_DISTANCE_OPTIONS = [10, 25, 50, 100];
 
 export const getZipCenter = (zip: string): LatLngLiteral | null =>
   (zipToLatLong as ZipCenterLookup)[zip] || null;
@@ -52,11 +56,50 @@ export const compareDistance = (
   return a.distance - b.distance;
 };
 
+// TODO: tests
+export const offersTypeOfHelp = (
+  careProvider: CareProviderSearchResult,
+  typeOfHelp: TypeOfHelp
+): boolean => {
+  switch (typeOfHelp) {
+    case TypeOfHelp.SubstanceUse:
+      return careProvider.substanceUse.supported;
+    case TypeOfHelp.CourtMandatedTreatment:
+      return (
+        careProvider.substanceUse.duiSupported ||
+        careProvider.mentalHealth.services.IntensiveOutpatient
+      );
+    case TypeOfHelp.MentalHealth:
+      return careProvider.mentalHealth.supported;
+    case TypeOfHelp.SuicidalIdeation:
+      return careProvider.mentalHealth.supported;
+    default:
+      return false;
+  }
+};
+
+// TODO: tests
+export const offersAnyTypesOfHelpNeeded = (
+  careProvider: CareProviderSearchResult,
+  helpNeeded: TypeOfHelp[]
+): boolean => {
+  // if no help types specified, don't apply any filter
+  if (!helpNeeded.length) {
+    return true;
+  }
+
+  // check if provider offers ANY of the types of help needed
+  return helpNeeded.some((typeOfHelp) =>
+    offersTypeOfHelp(careProvider, typeOfHelp)
+  );
+};
+
 // TODO: figure out how to limit results if there are too many
 export function getMatchingCare(
   careData: CareProvider[],
   zip: string,
-  radiusMiles: number
+  radiusMiles: number,
+  typesOfHelp: TypeOfHelp[] = []
 ): SearchResult {
   if (zip.length !== 5) {
     return {
@@ -77,6 +120,7 @@ export function getMatchingCare(
   // calculate distance, apply filters, & sort results by distance
   const results = addSearchMetadata(careData, center)
     .filter((result) => isWithinRadius(result, radiusMiles))
+    .filter((result) => offersAnyTypesOfHelpNeeded(result, typesOfHelp))
     .sort(compareDistance);
 
   return { results, error: null };
@@ -87,10 +131,23 @@ export function getMatchingCare(
  * @param searchParams
  * @returns Object containing search urls by name
  */
-export function parseSearchParams(searchParams: URLSearchParams) {
+export function getFiltersFromSearchParams(
+  searchParams: URLSearchParams
+): SearchFilters {
+  const milesStr = searchParams.get("miles");
   return {
     zip: searchParams.get("zip") ?? "",
-    miles: searchParams.get("miles") ?? "",
+    miles: (milesStr && parseInt(milesStr)) || DEFAULT_RADIUS_MILES,
+    // TODO: how to enforce type?
+    typesOfHelp: searchParams.getAll("types_of_help") as TypeOfHelp[],
+  };
+}
+
+export function constructSearchParamsFromFilters(filters: SearchFilters) {
+  return {
+    zip: filters.zip,
+    miles: filters.miles.toString(),
+    types_of_help: filters.typesOfHelp,
   };
 }
 

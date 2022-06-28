@@ -114,6 +114,7 @@ export type CareProvider = {
   website: string;
   substanceUse: {
     supported: boolean;
+    duiSupported: boolean;
     services: { [key in SubstanceUseServices]: boolean };
   };
   mentalHealth: {
@@ -147,4 +148,12 @@ export interface ZipCenterLookup {
 export type SearchFilters = {
   zip: string;
   miles: number;
+  typesOfHelp: TypeOfHelp[];
 };
+
+export enum TypeOfHelp {
+  SubstanceUse = "substance_use",
+  CourtMandatedTreatment = "court_mandated_treatment",
+  MentalHealth = "mental_health",
+  SuicidalIdeation = "suicidal_ideation",
+}

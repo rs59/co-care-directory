@@ -1,3 +1,4 @@
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 type CommaSeparatedListProps = {
@@ -16,10 +17,10 @@ function CommaSeparatedList({
       {Object.entries(boolMap)
         .filter(([_, val]) => !!val)
         .map(([key], idx, arr) => (
-          <>
+          <React.Fragment key={key}>
             {t(`${translationPrefix}${key}`)}
             {idx < arr.length - 1 ? ", " : ""}
-          </>
+          </React.Fragment>
         ))}
     </>
   );

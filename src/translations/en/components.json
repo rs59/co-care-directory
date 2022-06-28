@@ -4,7 +4,13 @@
     "toggleFiltersButton": "Filter results",
     "viewResultsButton": "View results",
     "distance": "Distance",
-    "withinMiles": "Within {{n}} miles"
+    "withinMiles": "Within {{n}} miles",
+    "typeOfHelp": "Type of help",
+    "typeOfHelpAnswer": {
+      "substance_use": "Drugs and/or alcohol use",
+      "court_mandated_treatment": "Court-mandated treatment",
+      "mental_health": "Mental health (persistent feelings of sadness, loneliness, worry, suicidal thoughts)"
+    }
   },
   "resultDetail": {
     "telephoneNumber": "Telephone number",

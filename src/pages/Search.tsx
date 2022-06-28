@@ -6,13 +6,19 @@ import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { LatLngTuple, Map as LeafletMap } from "leaflet";
 import { Marker } from "react-leaflet";
 
-import { getMatchingCare, getResultBounds, parseSearchParams } from "../util";
+import {
+  constructSearchParamsFromFilters,
+  getMatchingCare,
+  getResultBounds,
+  getFiltersFromSearchParams,
+} from "../util";
 import CARE_PROVIDER_DATA from "../data/ladders_data.json";
 import {
   CareProvider,
   CareProviderSearchResult,
   SearchFilters,
   SearchResult,
+  TypeOfHelp,
 } from "../types";
 import SearchFiltersControl from "../components/Search/FiltersControl";
 import ResultCard from "../components/Search/ResultCard";
@@ -175,13 +181,11 @@ const Mobile = ({
 function Search() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const params = parseSearchParams(searchParams);
+  const initialFilters = getFiltersFromSearchParams(searchParams);
   const mapRef = useRef<LeafletMap>(null);
 
-  const [searchFilters, setSearchFilters] = useState<SearchFilters>({
-    zip: params.zip,
-    miles: parseInt(params.miles) || DEFAULT_RADIUS,
-  });
+  const [searchFilters, setSearchFilters] =
+    useState<SearchFilters>(initialFilters);
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [isListView, setIsListView] = useState<boolean>(true);
   // Leaflet map must be manually re-rendered as a workaround
@@ -203,14 +207,15 @@ function Search() {
     const result = getMatchingCare(
       CARE_PROVIDER_DATA as CareProvider[],
       filters.zip,
-      filters.miles
+      filters.miles,
+      filters.typesOfHelp
     );
     setSearchResult(result);
   };
 
   useEffect(() => {
     // zip is the only required filter - redirect to homepage if it doesn't exist
-    if (!params.zip) {
+    if (!initialFilters.zip) {
       navigate("/", {
         replace: true,
       });
@@ -225,7 +230,7 @@ function Search() {
         <GridContainer>
           <div className="border-bottom border-base-lighter">
             <h1>
-              {t("pages.search.heading")} {params.zip}
+              {t("pages.search.heading")} {searchFilters.zip}
             </h1>
             <div className="margin-y-2">
               <SearchFiltersControl
@@ -233,11 +238,7 @@ function Search() {
                 onApplyFilters={(filters) => {
                   setSearchFilters(filters);
                   performSearch(filters);
-                  // TODO: add helper?
-                  setSearchParams({
-                    zip: filters.zip,
-                    miles: filters.miles.toString(),
-                  });
+                  setSearchParams(constructSearchParamsFromFilters(filters));
                 }}
               />
             </div>

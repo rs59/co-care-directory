@@ -32,6 +32,7 @@ const DUMMY_CARE_PROVIDER: CareProvider = {
   website: "",
   substanceUse: {
     supported: false,
+    duiSupported: false,
     services: SUBSTANCE_USE_SERVICES.reduce((map, val) => {
       map[val] = false;
       return map;
