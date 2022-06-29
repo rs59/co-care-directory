@@ -1,6 +1,14 @@
 {
-  "milesAway": "{{ miles }} miles away",
-  "searchFiltersControl": {
+  "banner": {
+    "immediateHelp": "Need immediate help for an emotional, mental health, or substance use crisis?",
+    "changeLanguage": "Change language"
+  },
+  "footer": {
+    "feedbackPrompt": "Have a suggestion for improvement on this website?",
+    "feedbackCta": "Submit a suggestion on this Google form."
+  },
+  "search": {
+    "milesAway": "{{ miles }} miles away",
     "toggleFiltersButton": "Filter results",
     "viewResultsButton": "View results",
     "distance": "Distance",
@@ -22,13 +30,26 @@
     "telephoneNumber": "Telephone number",
     "website": "Website",
     "address": "Address",
+    "hours": "Hours of operation",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "contactForHours": "Please contact the Clinic or Provider directory for hours",
     "fees": "Fees",
     "_fees": {
       "Medicaid": "Medicaid",
       "PrivateInsurance": "Private Insurance",
       "SelfPay": "Self Pay",
       "SlidingFeeScale": "Sliding Fee Scale"
-    },
-    "hours": "Hours of operation"
+    }
+  },
+  "home": {
+    "zipPrompt": "Enter your zip code to find care near your area",
+    "searchButton": "Search",
+    "zipInput": "Zip code"
   }
 }

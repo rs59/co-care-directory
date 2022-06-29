@@ -6,7 +6,7 @@ export default function MilesAway({ meters }: { meters?: number }) {
   const miles = meters ? (meters / METERS_IN_A_MILE).toFixed(1) : "??";
   return (
     <p className="text-base margin-top-0 margin-bottom-0">
-      {t("components.milesAway", { miles })}
+      {t("components.search.milesAway", { miles })}
     </p>
   );
 }

@@ -40,7 +40,7 @@ function BasicResultDetail({ headingLevel, result }: BasicResultDetailProps) {
         <ResultDatum Icon={Website} key="website">
           <Heading className="usa-sr-only">{t(`${T_PREFIX}website`)}</Heading>
           <Link
-            className="wrap-text"
+            className="text-wrap"
             variant="external"
             target="#"
             href={encodeURI(result.website)}

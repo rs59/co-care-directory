@@ -1,7 +1,22 @@
 {
   "home": {
     "heading": "Find behavioral health care that's right for you.",
-    "zipPrompt": "Enter your zip code to find care near your area"
+    "zipPrompt": "Enter your zip code to find care near your area",
+    "_coloradoCrisisService": {
+      "heading": "If you’re experiencing crisis",
+      "content": "No matter what you’re going through, help is available. Call Colorado Crisis Services at 844-493-TALK (8255) or text TALK to 38255.",
+      "cta": "Learn more at ColoradoCrisisServices.org"
+    },
+    "_iMatter": {
+      "heading": "Free therapy for youth",
+      "content": "I Matter can connect youth 18 years of age and younger (21 years or younger if receiving special education services) with a therapist for up to 6 free and confidential counseling sessions.",
+      "cta": "Visit IMatterColorado.org To find a therapist and schedule an appointment."
+    },
+    "_bha": {
+      "heading": "Our committment to you",
+      "content": "You’ll never need to create an account to use this service, and any personally identifiable information you share will be kept secure.",
+      "cta": "Read our privacy policy."
+    }
   },
   "search": {
     "heading": "Results near",
