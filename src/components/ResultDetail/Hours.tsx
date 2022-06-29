@@ -1,36 +1,43 @@
+import { useTranslation } from "react-i18next";
 import { DailyHours, WeeklyHours } from "../../types";
 
 const formatDailyHours = (hours: DailyHours) => {
   return hours.open ? `${hours.start} - ${hours.end}` : "Closed";
 };
 
+const T_PREFIX = "components.resultDetail.";
+
 function Hours({ hours }: { hours: WeeklyHours }) {
-  return hours ? (
+  const { t } = useTranslation();
+  if (!hours) {
+    return (
+      <div className="margin-bottom-1">{t(`${T_PREFIX}contactForHours`)}</div>
+    );
+  }
+  return (
     <>
       <div className="margin-bottom-1">
-        Monday: {formatDailyHours(hours.monday)}
+        {t(`${T_PREFIX}monday`)} {": "} {formatDailyHours(hours.monday)}
       </div>
       <div className="margin-bottom-1">
-        Tuesday: {formatDailyHours(hours.tuesday)}
+        {t(`${T_PREFIX}tuesday`)}: {formatDailyHours(hours.tuesday)}
       </div>
       <div className="margin-bottom-1">
-        Wednesday: {formatDailyHours(hours.wednesday)}
+        {t(`${T_PREFIX}wednesday`)}: {formatDailyHours(hours.wednesday)}
       </div>
       <div className="margin-bottom-1">
-        Thursday: {formatDailyHours(hours.thursday)}
+        {t(`${T_PREFIX}thursday`)}: {formatDailyHours(hours.thursday)}
       </div>
       <div className="margin-bottom-1">
-        Friday: {formatDailyHours(hours.friday)}
+        {t(`${T_PREFIX}friday`)}: {formatDailyHours(hours.friday)}
       </div>
       <div className="margin-bottom-1">
-        Saturday: {formatDailyHours(hours.saturday)}
+        {t(`${T_PREFIX}saturday`)}: {formatDailyHours(hours.saturday)}
       </div>
       <div className="margin-bottom-1">
-        Sunday: {formatDailyHours(hours.sunday)}
+        {t(`${T_PREFIX}sunday`)}: {formatDailyHours(hours.sunday)}
       </div>
     </>
-  ) : (
-    <div className="margin-bottom-1">Please contact directly for hours</div>
   );
 }
 

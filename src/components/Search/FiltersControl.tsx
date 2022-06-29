@@ -4,6 +4,7 @@ import { TFunction, useTranslation } from "react-i18next";
 import { FeePreference, SearchFilters, TypeOfHelp } from "../../types";
 import { MILE_DISTANCE_OPTIONS, toggleItemInList } from "../../util";
 
+const T_PREFIX = "components.search.";
 const DistanceFilter = ({
   filters,
   setFilters,
@@ -21,7 +22,7 @@ const DistanceFilter = ({
     <Radio
       id={miles.toString()}
       name="distance"
-      label={t("components.searchFiltersControl.withinMiles", {
+      label={t(`${T_PREFIX}withinMiles`, {
         n: miles,
       })}
       checked={filters.miles === miles}
@@ -32,7 +33,7 @@ const DistanceFilter = ({
   );
 
   return (
-    <Fieldset legend={t("components.searchFiltersControl.distance")}>
+    <Fieldset legend={t(`${T_PREFIX}distance`)}>
       {MILE_DISTANCE_OPTIONS.map((miles) => getRadio(miles))}
     </Fieldset>
   );
@@ -58,9 +59,7 @@ const TypeOfHelpFilter = ({
     <Checkbox
       id={typeOfHelp}
       name="type of help"
-      label={t(
-        `components.searchFiltersControl.typeOfHelpAnswer.${typeOfHelp}`
-      )}
+      label={t(`${T_PREFIX}typeOfHelpAnswer.${typeOfHelp}`)}
       checked={filters.typesOfHelp.includes(typeOfHelp)}
       onChange={() => setTypeOfHelpFilter(typeOfHelp)}
       value={typeOfHelp}
@@ -68,7 +67,7 @@ const TypeOfHelpFilter = ({
   );
 
   return (
-    <Fieldset legend={t("components.searchFiltersControl.typeOfHelp")}>
+    <Fieldset legend={t(`${T_PREFIX}typeOfHelp`)}>
       {getCheckbox(TypeOfHelp.SubstanceUse)}
       {getCheckbox(TypeOfHelp.CourtMandatedTreatment)}
       {getCheckbox(TypeOfHelp.MentalHealth)}
@@ -141,7 +140,7 @@ function SearchFiltersControl({
         onClick={() => setIsExpanded(!isExpanded)}
         outline
       >
-        {t("components.searchFiltersControl.toggleFiltersButton")}
+        {t(`${T_PREFIX}toggleFiltersButton`)}
       </Button>
       <div className={isExpanded ? "display-block" : "display-none"}>
         <div className="margin-y-3">
@@ -165,7 +164,7 @@ function SearchFiltersControl({
             setIsExpanded(false);
           }}
         >
-          {t("components.searchFiltersControl.viewResultsButton")}
+          {t(`${T_PREFIX}viewResultsButton`)}
         </Button>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import "leaflet/dist/leaflet.css";
 
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import { Icon, LeafletEventHandlerFnMap, Map as LeafletMap } from "leaflet";
 
 import {
