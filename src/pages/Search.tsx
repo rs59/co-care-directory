@@ -18,7 +18,6 @@ import {
   CareProviderSearchResult,
   SearchFilters,
   SearchResult,
-  TypeOfHelp,
 } from "../types";
 import SearchFiltersControl from "../components/Search/FiltersControl";
 import ResultCard from "../components/Search/ResultCard";
@@ -203,12 +202,9 @@ function Search() {
   const navigate = useNavigate();
 
   const performSearch = (filters: SearchFilters) => {
-    // TODO: update args for getMatchingCare to use SearchFilter
     const result = getMatchingCare(
       CARE_PROVIDER_DATA as CareProvider[],
-      filters.zip,
-      filters.miles,
-      filters.typesOfHelp
+      filters
     );
     setSearchResult(result);
   };

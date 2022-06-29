@@ -142,29 +142,32 @@ describe("compareDistance", () => {
 describe("getMatchingCare", () => {
   describe("error", () => {
     test("it does not return error if valid CO zipcode provided", () => {
-      const { error } = getMatchingCare(
-        [DUMMY_CARE_PROVIDER],
-        VALID_CO_ZIP,
-        DEFAULT_RADIUS_MILES
-      );
+      const { error } = getMatchingCare([DUMMY_CARE_PROVIDER], {
+        zip: VALID_CO_ZIP,
+        miles: DEFAULT_RADIUS_MILES,
+        typesOfHelp: [],
+        feePreferences: [],
+      });
       expect(error).toBeNull();
     });
 
     test("it returns error if provided zip is not valid - length < 5", () => {
-      const { error } = getMatchingCare(
-        [DUMMY_CARE_PROVIDER],
-        INVALID_ZIP,
-        DEFAULT_RADIUS_MILES
-      );
+      const { error } = getMatchingCare([DUMMY_CARE_PROVIDER], {
+        zip: INVALID_ZIP,
+        miles: DEFAULT_RADIUS_MILES,
+        typesOfHelp: [],
+        feePreferences: [],
+      });
       expect(error).not.toBeNull();
     });
 
     test("it returns error if provided zip is not valid - not in CO list", () => {
-      const { error } = getMatchingCare(
-        [DUMMY_CARE_PROVIDER],
-        VALID_NOT_CO_ZIP,
-        DEFAULT_RADIUS_MILES
-      );
+      const { error } = getMatchingCare([DUMMY_CARE_PROVIDER], {
+        zip: VALID_NOT_CO_ZIP,
+        miles: DEFAULT_RADIUS_MILES,
+        typesOfHelp: [],
+        feePreferences: [],
+      });
       expect(error).not.toBeNull();
     });
   });
@@ -192,11 +195,12 @@ describe("getMatchingCare", () => {
       },
     ];
 
-    const { results } = getMatchingCare(
-      DATA,
-      VALID_CO_ZIP,
-      DEFAULT_RADIUS_MILES
-    );
+    const { results } = getMatchingCare(DATA, {
+      zip: VALID_CO_ZIP,
+      miles: DEFAULT_RADIUS_MILES,
+      typesOfHelp: [],
+      feePreferences: [],
+    });
 
     // Only 'close' and 'further' should be returned in results
     expect(results).toHaveLength(2);

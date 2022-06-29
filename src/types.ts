@@ -87,6 +87,8 @@ export const FEES = [
   "SlidingFeeScale",
 ] as const;
 export type Fees = typeof FEES[number];
+// these represent user ability to pay, which is slightly different from Fees
+export type FeePreference = Exclude<Fees, "SelfPay">;
 
 export const LANGUAGES = [
   "English",
@@ -157,6 +159,7 @@ export type SearchFilters = {
   zip: string;
   miles: number;
   typesOfHelp: TypeOfHelp[];
+  feePreferences: FeePreference[];
 };
 
 export enum TypeOfHelp {

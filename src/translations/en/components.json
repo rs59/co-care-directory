@@ -10,6 +10,12 @@
       "substance_use": "Drugs and/or alcohol use",
       "court_mandated_treatment": "Court-mandated treatment",
       "mental_health": "Mental health (persistent feelings of sadness, loneliness, worry, suicidal thoughts)"
+    },
+    "feePreference": "Payment options",
+    "feePreferenceAnswer": {
+      "Medicaid": "Accepts Medicaid",
+      "PrivateInsurance": "Accepts private insurance",
+      "SlidingFeeScale": "Offers sliding fee discounts"
     }
   },
   "resultDetail": {
@@ -18,7 +24,7 @@
     "address": "Address",
     "fees": "Fees",
     "_fees": {
-      "Medicaid": "Medicade",
+      "Medicaid": "Medicaid",
       "PrivateInsurance": "Private Insurance",
       "SelfPay": "Self Pay",
       "SlidingFeeScale": "Sliding Fee Scale"

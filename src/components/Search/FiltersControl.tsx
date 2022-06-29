@@ -1,8 +1,8 @@
 import { Button, Checkbox, Fieldset, Radio } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { TFunction, useTranslation } from "react-i18next";
-import { SearchFilters, TypeOfHelp } from "../../types";
-import { MILE_DISTANCE_OPTIONS } from "../../util";
+import { FeePreference, SearchFilters, TypeOfHelp } from "../../types";
+import { MILE_DISTANCE_OPTIONS, toggleItemInList } from "../../util";
 
 const DistanceFilter = ({
   filters,
@@ -48,14 +48,10 @@ const TypeOfHelpFilter = ({
   t: TFunction;
 }) => {
   const setTypeOfHelpFilter = (typeOfHelp: TypeOfHelp) => {
-    // since filters.typesOfHelp is an array of all selected options,
-    // this is toggling a selection by either
-    // adding the selected typeOfHelp to the array or
-    // removing the selected typeOfHelp from the array
-    const newValues = filters.typesOfHelp.includes(typeOfHelp)
-      ? filters.typesOfHelp.filter((val) => val !== typeOfHelp)
-      : [...filters.typesOfHelp, typeOfHelp];
-    setFilters({ ...filters, typesOfHelp: newValues });
+    setFilters({
+      ...filters,
+      typesOfHelp: toggleItemInList(filters.typesOfHelp, typeOfHelp),
+    });
   };
 
   const getCheckbox = (typeOfHelp: TypeOfHelp) => (
@@ -76,6 +72,45 @@ const TypeOfHelpFilter = ({
       {getCheckbox(TypeOfHelp.SubstanceUse)}
       {getCheckbox(TypeOfHelp.CourtMandatedTreatment)}
       {getCheckbox(TypeOfHelp.MentalHealth)}
+    </Fieldset>
+  );
+};
+
+// TODO: refactor so that FeePreferenceFilter and TypeOfHelpFilter share checkbox code
+const FeePreferenceFilter = ({
+  filters,
+  setFilters,
+  t,
+}: {
+  filters: SearchFilters;
+  setFilters: (filters: SearchFilters) => void;
+  t: TFunction;
+}) => {
+  const setFeePreferenceFilter = (feePreference: FeePreference) => {
+    setFilters({
+      ...filters,
+      feePreferences: toggleItemInList(filters.feePreferences, feePreference),
+    });
+  };
+
+  const getCheckbox = (feePreference: FeePreference) => (
+    <Checkbox
+      id={feePreference}
+      name="payment options"
+      label={t(
+        `components.searchFiltersControl.feePreferenceAnswer.${feePreference}`
+      )}
+      checked={filters.feePreferences.includes(feePreference)}
+      onChange={() => setFeePreferenceFilter(feePreference)}
+      value={feePreference}
+    />
+  );
+
+  return (
+    <Fieldset legend={t("components.searchFiltersControl.feePreference")}>
+      {getCheckbox("PrivateInsurance")}
+      {getCheckbox("Medicaid")}
+      {getCheckbox("SlidingFeeScale")}
     </Fieldset>
   );
 };
@@ -114,6 +149,13 @@ function SearchFiltersControl({
         </div>
         <div className="margin-y-3">
           <TypeOfHelpFilter filters={filters} setFilters={setFilters} t={t} />
+        </div>
+        <div className="margin-y-3">
+          <FeePreferenceFilter
+            filters={filters}
+            setFilters={setFilters}
+            t={t}
+          />
         </div>
         <Button
           type="button"

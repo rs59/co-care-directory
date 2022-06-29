@@ -12,6 +12,7 @@ import {
   SearchResult,
   ZipData,
   TypeOfHelp,
+  FeePreference,
 } from "./types";
 import coloradoZipData from "./data/colorado_zip_data.json";
 
@@ -96,13 +97,28 @@ export const offersAnyTypesOfHelpNeeded = (
   );
 };
 
+// TODO: tests
+export const meetsFeePreferences = (
+  careProvider: CareProviderSearchResult,
+  feePreferences: FeePreference[]
+): boolean => {
+  // if no payment preferences specified, don't apply any filter
+  if (!feePreferences.length) {
+    return true;
+  }
+
+  // check if provider fees match any of preferences
+  return feePreferences.some(
+    (feePreference) => careProvider.fees[feePreference]
+  );
+};
+
 // TODO: figure out how to limit results if there are too many
 export function getMatchingCare(
   careData: CareProvider[],
-  zip: string,
-  radiusMiles: number,
-  typesOfHelp: TypeOfHelp[] = []
+  filters: SearchFilters
 ): SearchResult {
+  const { zip, miles, typesOfHelp, feePreferences } = filters;
   if (zip.length !== 5) {
     return {
       results: [],
@@ -121,8 +137,9 @@ export function getMatchingCare(
 
   // calculate distance, apply filters, & sort results by distance
   const results = addSearchMetadata(careData, center)
-    .filter((result) => isWithinRadius(result, radiusMiles))
+    .filter((result) => isWithinRadius(result, miles))
     .filter((result) => offersAnyTypesOfHelpNeeded(result, typesOfHelp))
+    .filter((result) => meetsFeePreferences(result, feePreferences))
     .sort(compareDistance);
 
   return { results, error: null };
@@ -142,6 +159,7 @@ export function getFiltersFromSearchParams(
     miles: (milesStr && parseInt(milesStr)) || DEFAULT_RADIUS_MILES,
     // TODO: how to enforce type?
     typesOfHelp: searchParams.getAll("types_of_help") as TypeOfHelp[],
+    feePreferences: searchParams.getAll("fees") as FeePreference[],
   };
 }
 
@@ -150,6 +168,7 @@ export function constructSearchParamsFromFilters(filters: SearchFilters) {
     zip: filters.zip,
     miles: filters.miles.toString(),
     types_of_help: filters.typesOfHelp,
+    fees: filters.feePreferences,
   };
 }
 
@@ -184,4 +203,12 @@ export function getGoogleMapsDirectionsURL(
  */
 export function anyAreTrue(boolMap: { [key: string]: boolean }) {
   return Object.values(boolMap).some((bool) => !!bool);
+}
+
+export function toggleItemInList(list: any[], item: any) {
+  // remove an item if it's in the list
+  // or add it if it isn't
+  return list.includes(item)
+    ? list.filter((val) => val !== item)
+    : [...list, item];
 }
