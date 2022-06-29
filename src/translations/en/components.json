@@ -9,7 +9,10 @@
   },
   "search": {
     "milesAway": "{{ miles }} miles away",
-    "toggleFiltersButton": "Filter results",
+    "toggleFiltersButton_zero": "Filter results",
+    "toggleFiltersButton_one": "Filter results ({{count}} selected)",
+    "toggleFiltersButton_other": "Filter results ({{count}} selected)",
+    "clearFiltersButton": "Clear all",
     "viewResultsButton": "View results",
     "distance": "Distance",
     "withinMiles": "Within {{n}} miles",

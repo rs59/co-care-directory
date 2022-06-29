@@ -96,9 +96,7 @@ const FeePreferenceFilter = ({
     <Checkbox
       id={feePreference}
       name="payment options"
-      label={t(
-        `components.searchFiltersControl.feePreferenceAnswer.${feePreference}`
-      )}
+      label={t(`${T_PREFIX}feePreferenceAnswer.${feePreference}`)}
       checked={filters.feePreferences.includes(feePreference)}
       onChange={() => setFeePreferenceFilter(feePreference)}
       value={feePreference}
@@ -106,12 +104,31 @@ const FeePreferenceFilter = ({
   );
 
   return (
-    <Fieldset legend={t("components.searchFiltersControl.feePreference")}>
+    <Fieldset legend={t(`${T_PREFIX}feePreference`)}>
       {getCheckbox("PrivateInsurance")}
       {getCheckbox("Medicaid")}
       {getCheckbox("SlidingFeeScale")}
     </Fieldset>
   );
+};
+
+const countOptionalFiltersSelected = (filters: SearchFilters): number => {
+  let count = 0;
+  if (filters.typesOfHelp.length) {
+    count += 1;
+  }
+  if (filters.feePreferences.length) {
+    count += 1;
+  }
+  return count;
+};
+
+const clearOptionalFilters = (filters: SearchFilters): SearchFilters => {
+  return {
+    ...filters,
+    typesOfHelp: [],
+    feePreferences: [],
+  };
 };
 
 function SearchFiltersControl({
@@ -124,6 +141,8 @@ function SearchFiltersControl({
   const { t } = useTranslation();
   const [filters, setFilters] = useState<SearchFilters>(currentFilters);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  const countSelected = countOptionalFiltersSelected(currentFilters);
 
   // if filter is closed, reset any filters that haven't been applied
   useEffect(() => {
@@ -138,10 +157,25 @@ function SearchFiltersControl({
         type="button"
         className="usa-button"
         onClick={() => setIsExpanded(!isExpanded)}
-        outline
+        outline={countSelected === 0}
       >
-        {t(`${T_PREFIX}toggleFiltersButton`)}
+        {t(`${T_PREFIX}toggleFiltersButton`, {
+          count: countSelected,
+        })}
       </Button>
+      {countSelected > 0 && (
+        <Button
+          type="button"
+          onClick={() => {
+            const cleared = clearOptionalFilters(filters);
+            setFilters(cleared);
+            onApplyFilters(cleared);
+          }}
+          unstyled
+        >
+          {t(`${T_PREFIX}clearFiltersButton`)}
+        </Button>
+      )}
       <div className={isExpanded ? "display-block" : "display-none"}>
         <div className="margin-y-3">
           <DistanceFilter filters={filters} setFilters={setFilters} t={t} />
@@ -165,6 +199,9 @@ function SearchFiltersControl({
           }}
         >
           {t(`${T_PREFIX}viewResultsButton`)}
+        </Button>
+        <Button type="button" onClick={() => setIsExpanded(false)} unstyled>
+          {t("common.cancel")}
         </Button>
       </div>
     </div>
