@@ -1,86 +1,19 @@
-import { Button, Checkbox, Fieldset, Radio } from "@trussworks/react-uswds";
+import { Button, Checkbox, Fieldset } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { TFunction, useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { FeePreference, SearchFilters, TypeOfHelp } from "../../types";
-import { MILE_DISTANCE_OPTIONS, toggleItemInList } from "../../util";
+import { FeePreference, SearchFilters, TypeOfHelp } from "../../../types";
+import { toggleItemInList } from "../../../util";
+import DistanceFilter from "./Distance";
+import TypeOfHelpFilter from "./TypeOfHelp";
 
-const FilterFieldset = styled(Fieldset)`
+export const FilterFieldset = styled(Fieldset)`
   legend {
     font-weight: bold;
   }
 `;
 
 const T_PREFIX = "components.search.";
-const DistanceFilter = ({
-  filters,
-  setFilters,
-  t,
-}: {
-  filters: SearchFilters;
-  setFilters: (filters: SearchFilters) => void;
-  t: TFunction;
-}) => {
-  const setDistanceFilter = (miles: number) => {
-    setFilters({ ...filters, miles });
-  };
-
-  const getRadio = (miles: number) => (
-    <Radio
-      id={miles.toString()}
-      name="distance"
-      label={t(`${T_PREFIX}withinMiles`, {
-        n: miles,
-      })}
-      checked={filters.miles === miles}
-      onChange={() => setDistanceFilter(miles)}
-      value={miles}
-      key={miles}
-    />
-  );
-
-  return (
-    <FilterFieldset legend={t(`${T_PREFIX}distance`)}>
-      {MILE_DISTANCE_OPTIONS.map((miles) => getRadio(miles))}
-    </FilterFieldset>
-  );
-};
-
-const TypeOfHelpFilter = ({
-  filters,
-  setFilters,
-  t,
-}: {
-  filters: SearchFilters;
-  setFilters: (filters: SearchFilters) => void;
-  t: TFunction;
-}) => {
-  const setTypeOfHelpFilter = (typeOfHelp: TypeOfHelp) => {
-    setFilters({
-      ...filters,
-      typesOfHelp: toggleItemInList(filters.typesOfHelp, typeOfHelp),
-    });
-  };
-
-  const getCheckbox = (typeOfHelp: TypeOfHelp) => (
-    <Checkbox
-      id={typeOfHelp}
-      name="type of help"
-      label={t(`${T_PREFIX}typeOfHelpAnswer.${typeOfHelp}`)}
-      checked={filters.typesOfHelp.includes(typeOfHelp)}
-      onChange={() => setTypeOfHelpFilter(typeOfHelp)}
-      value={typeOfHelp}
-    />
-  );
-
-  return (
-    <FilterFieldset legend={t(`${T_PREFIX}typeOfHelp`)}>
-      {getCheckbox(TypeOfHelp.SubstanceUse)}
-      {getCheckbox(TypeOfHelp.CourtMandatedTreatment)}
-      {getCheckbox(TypeOfHelp.MentalHealth)}
-    </FilterFieldset>
-  );
-};
 
 // TODO: refactor so that FeePreferenceFilter and TypeOfHelpFilter share checkbox code
 const FeePreferenceFilter = ({
@@ -187,10 +120,23 @@ function SearchFiltersControl({
           )}
         </div>
         <div className="margin-y-3">
-          <DistanceFilter filters={filters} setFilters={setFilters} t={t} />
+          <DistanceFilter
+            filters={filters}
+            setFilters={setFilters}
+            tPrefix={`${T_PREFIX}filters.distance.`}
+          />
         </div>
         <div className="margin-y-3">
-          <TypeOfHelpFilter filters={filters} setFilters={setFilters} t={t} />
+          <TypeOfHelpFilter
+            options={[
+              TypeOfHelp.SubstanceUse,
+              TypeOfHelp.CourtMandatedTreatment,
+              TypeOfHelp.MentalHealth,
+            ]}
+            filters={filters}
+            setFilters={setFilters}
+            tPrefix={`${T_PREFIX}filters.typeOfHelp.`}
+          />
         </div>
         <div className="margin-y-3">
           <FeePreferenceFilter

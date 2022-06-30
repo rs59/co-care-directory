@@ -86,5 +86,45 @@
       "ResidentialLongTermTreatment": "Residential Long Term Treatment",
       "ResidentialShortTermTreatment": "Residential Short Term Treatment"
     }
+  },
+  "guidedSearch": {
+    "who": {
+      "question": "Are you looking for help for yourself or someone you care about?",
+      "answers": {
+        "yourself": "I am searching for myself",
+        "someone": "I am searching for someone I care about"
+      }
+    },
+    "typeOfHelp": {
+      "yourself": {
+        "question": "Please select the statements below that best describe the type of help you are looking for.",
+        "answers": {
+          "substance_use": "My drug and/or alcohol use",
+          "court_mandated_treatment": "My court-mandated treatment",
+          "mental_health": "My mental health (persistent feelings of sadness, loneliness, worry...)",
+          "suicidal_ideation": "Thoughts about killing myself and/or wishing I was dead",
+          "unsure": "Unsure",
+          "none": "None of the above"
+        }
+      },
+      "someone": {
+        "question": "Please select the statements below that best describe the type of help the person you care about is looking for.",
+        "answers": {
+          "substance_use": "Someone I care about needs help with drugs and/or alcohol use",
+          "court_mandated_treatment": "Someone I care about needs court-mandated treatment",
+          "mental_health": "Someone I care about needs help with mental health (persistent feelings of sadness, loneliness, worry....)",
+          "suicidal_ideation": "Someone I care about is having thoughts about killing themself and/or wishing they were dead",
+          "unsure": "Unsure",
+          "none": "None of the above"
+        }
+      }
+    },
+    "location": {
+      "question": "Where are you looking for care?"
+    },
+    "distance": {
+      "distance": "How far are you, or the person you care about, able to travel for care?",
+      "withinMiles": "Within {{n}} miles"
+    }
   }
 }

@@ -7,7 +7,6 @@ import { LatLngTuple, Map as LeafletMap } from "leaflet";
 import { Marker } from "react-leaflet";
 
 import {
-  constructSearchParamsFromFilters,
   getMatchingCare,
   getResultBounds,
   getFiltersFromSearchParams,
@@ -19,7 +18,7 @@ import {
   SearchFilters,
   SearchResult,
 } from "../types";
-import SearchFiltersControl from "../components/Search/FiltersControl";
+import Control from "../components/Search/Filters/Control";
 import ResultCard from "../components/Search/ResultCard";
 import ResultsList from "../components/Search/ResultsList";
 import ResultsMap, { ResultsMapProps } from "../components/Search/ResultsMap";
@@ -28,9 +27,6 @@ import MobileViewToggle, {
 } from "../components/Search/MobileViewToggle";
 import { markerIcon, markerActiveIcon } from "../components/Map";
 import { ReactComponent as Close } from "../images/close.svg";
-
-// TODO: add ui for radius
-const DEFAULT_RADIUS = 8047; // 5 miles in meters
 
 /**
  * The side-by-side list + map view for desktop or tablet,
@@ -88,16 +84,22 @@ const Desktop = ({ results }: { results: CareProviderSearchResult[] }) => {
  * and always hidden from screen readers (via aria-hidden=true)
  * to avoid duplication of results lists to screen readers
  */
-const Mobile = ({
-  isListView,
-  onShowMap,
-  onShowList,
-  mapRef,
-  results,
-}: MobileViewToggleProps &
-  Omit<ResultsMapProps, "bounds"> & {
-    results: CareProviderSearchResult[];
-  }) => {
+const Mobile = ({ results }: { results: CareProviderSearchResult[] }) => {
+  // Flag to track map vs list view
+  const [isListView, setIsListView] = useState(true);
+
+  // Leaflet map must be manually re-rendered as a workaround
+  // to deal with initial hidden state when map is created
+  // OR could just render map view first to avoid this special map manipulation
+  const mapRef = useRef<LeafletMap>(null);
+  const onShowMap = () => {
+    setIsListView(false);
+    setTimeout(() => {
+      mapRef.current?.invalidateSize();
+      mapRef.current?.fitBounds(getResultBounds(results));
+    }, 100);
+  };
+
   const [selectedResult, setSelectedResult] =
     useState<CareProviderSearchResult>();
   return (
@@ -105,7 +107,7 @@ const Mobile = ({
       <MobileViewToggle
         isListView={isListView}
         onShowMap={onShowMap}
-        onShowList={onShowList}
+        onShowList={() => setIsListView(true)}
       />
       <div className={isListView ? "" : "display-none"} key="mobile-list">
         <ResultsList results={results} isMobile />
@@ -135,7 +137,7 @@ const Mobile = ({
                   }
                   key={result.id}
                   eventHandlers={{
-                    click: (e) => {
+                    click: () => {
                       setSelectedResult(
                         results.find((r) => r.id === result.id)
                       );
@@ -182,25 +184,15 @@ const Mobile = ({
 
 function Search() {
   const { t } = useTranslation();
+  // Search filters as URL search params
   const [searchParams, setSearchParams] = useSearchParams();
   const initialFilters = getFiltersFromSearchParams(searchParams);
-  const mapRef = useRef<LeafletMap>(null);
 
+  // TODO: do we need this, or can we just use searchParams to track filter state?
   const [searchFilters, setSearchFilters] =
     useState<SearchFilters>(initialFilters);
+  // Filtered set of CareProviders OR error string
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [isListView, setIsListView] = useState<boolean>(true);
-  // Leaflet map must be manually re-rendered as a workaround
-  // to deal with initial hidden state when map is created
-  // OR could just render map view first to avoid this special map manipulation
-  const onShowMap = () => {
-    setIsListView(false);
-    setTimeout(() => {
-      mapRef.current?.invalidateSize();
-      searchResult &&
-        mapRef.current?.fitBounds(getResultBounds(searchResult.results));
-    }, 100);
-  };
 
   const navigate = useNavigate();
 
@@ -232,12 +224,12 @@ function Search() {
               {t("pages.search.heading")} {searchFilters.zip}
             </h1>
             <div className="margin-y-2">
-              <SearchFiltersControl
+              <Control
                 currentFilters={searchFilters}
                 onApplyFilters={(filters) => {
                   setSearchFilters(filters);
                   performSearch(filters);
-                  setSearchParams(constructSearchParamsFromFilters(filters));
+                  setSearchParams(filters);
                 }}
               />
             </div>
@@ -253,13 +245,7 @@ function Search() {
                   })}
                 </h2>
                 <Desktop results={searchResult.results} />
-                <Mobile
-                  results={searchResult.results}
-                  isListView={isListView}
-                  onShowList={() => setIsListView(true)}
-                  onShowMap={onShowMap}
-                  mapRef={mapRef}
-                />
+                <Mobile results={searchResult.results} />
               </>
             )}
           </div>

@@ -14,13 +14,19 @@
     "toggleFiltersButton_other": "Filter results ({{count}} selected)",
     "clearFiltersButton": "Clear all filters",
     "viewResultsButton": "View results",
-    "distance": "Distance",
-    "withinMiles": "Within {{n}} miles",
-    "typeOfHelp": "Type of help",
-    "typeOfHelpAnswer": {
-      "substance_use": "Drugs and/or alcohol use",
-      "court_mandated_treatment": "Court-mandated treatment",
-      "mental_health": "Mental health (persistent feelings of sadness, loneliness, worry, suicidal thoughts)"
+    "filters": {
+      "distance": {
+        "distance": "Distance",
+        "withinMiles": "Within {{n}} miles"
+      },
+      "typeOfHelp": {
+        "question": "Type of help",
+        "answers": {
+          "substance_use": "Drugs and/or alcohol use",
+          "court_mandated_treatment": "Court-mandated treatment",
+          "mental_health": "Mental health (persistent feelings of sadness, loneliness, worry, suicidal thoughts)"
+        }
+      }
     },
     "feePreference": "Payment types accepted",
     "feePreferenceAnswer": {

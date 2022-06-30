@@ -20,7 +20,7 @@ export const DEFAULT_RADIUS_MILES = 10;
 
 export const METERS_IN_A_MILE = 1609.34;
 
-export const MILE_DISTANCE_OPTIONS = [10, 25, 50, 100];
+export const MILE_DISTANCE_OPTIONS = ["10", "25", "50", "100"];
 
 export const getZipCenter = (zip: string): LatLngLiteral | null => {
   const data = (coloradoZipData as ZipData)[zip];
@@ -118,7 +118,8 @@ export function getMatchingCare(
   careData: CareProvider[],
   filters: SearchFilters
 ): SearchResult {
-  const { zip, miles, typesOfHelp, feePreferences } = filters;
+  const { zip, miles: milesStr, typesOfHelp, feePreferences } = filters;
+  const miles = parseInt(milesStr);
   if (zip.length !== 5) {
     return {
       results: [],
@@ -153,22 +154,12 @@ export function getMatchingCare(
 export function getFiltersFromSearchParams(
   searchParams: URLSearchParams
 ): SearchFilters {
-  const milesStr = searchParams.get("miles");
   return {
     zip: searchParams.get("zip") ?? "",
-    miles: (milesStr && parseInt(milesStr)) || DEFAULT_RADIUS_MILES,
+    miles: searchParams.get("miles") ?? `${DEFAULT_RADIUS_MILES}`,
     // TODO: how to enforce type?
-    typesOfHelp: searchParams.getAll("types_of_help") as TypeOfHelp[],
+    typesOfHelp: searchParams.getAll("typesOfHelp") as TypeOfHelp[],
     feePreferences: searchParams.getAll("fees") as FeePreference[],
-  };
-}
-
-export function constructSearchParamsFromFilters(filters: SearchFilters) {
-  return {
-    zip: filters.zip,
-    miles: filters.miles.toString(),
-    types_of_help: filters.typesOfHelp,
-    fees: filters.feePreferences,
   };
 }
 
