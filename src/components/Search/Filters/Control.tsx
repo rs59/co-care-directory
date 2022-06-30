@@ -4,53 +4,15 @@ import { TFunction, useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { FeePreference, SearchFilters, TypeOfHelp } from "../../../types";
 import { toggleItemInList } from "../../../util";
-import DistanceFilter from "./Distance";
-import TypeOfHelpFilter from "./TypeOfHelp";
+import DistanceInput from "./DistanceInput";
+import FeesPreferenceInput from "./FeesPreferenceInput";
+import TypeOfHelpInput from "./TypeOfHelpInput";
 
 export const FilterFieldset = styled(Fieldset)`
   legend {
     font-weight: bold;
   }
 `;
-
-const T_PREFIX = "components.search.";
-
-// TODO: refactor so that FeePreferenceFilter and TypeOfHelpFilter share checkbox code
-const FeePreferenceFilter = ({
-  filters,
-  setFilters,
-  t,
-}: {
-  filters: SearchFilters;
-  setFilters: (filters: SearchFilters) => void;
-  t: TFunction;
-}) => {
-  const setFeePreferenceFilter = (feePreference: FeePreference) => {
-    setFilters({
-      ...filters,
-      feePreferences: toggleItemInList(filters.feePreferences, feePreference),
-    });
-  };
-
-  const getCheckbox = (feePreference: FeePreference) => (
-    <Checkbox
-      id={feePreference}
-      name="payment options"
-      label={t(`${T_PREFIX}feePreferenceAnswer.${feePreference}`)}
-      checked={filters.feePreferences.includes(feePreference)}
-      onChange={() => setFeePreferenceFilter(feePreference)}
-      value={feePreference}
-    />
-  );
-
-  return (
-    <FilterFieldset legend={t(`${T_PREFIX}feePreference`)}>
-      {getCheckbox("PrivateInsurance")}
-      {getCheckbox("Medicaid")}
-      {getCheckbox("SlidingFeeScale")}
-    </FilterFieldset>
-  );
-};
 
 const countOptionalFiltersSelected = (filters: SearchFilters): number => {
   let count = 0;
@@ -71,6 +33,7 @@ const clearOptionalFilters = (filters: SearchFilters): SearchFilters => {
   };
 };
 
+const T_PREFIX = "components.search.";
 function SearchFiltersControl({
   currentFilters,
   onApplyFilters,
@@ -95,9 +58,10 @@ function SearchFiltersControl({
     <div>
       <Button
         type="button"
-        className="usa-button--base radius-pill"
+        className="radius-pill"
         onClick={() => setIsExpanded(!isExpanded)}
         outline={countSelected === 0}
+        base={countSelected !== 0}
       >
         {t(`${T_PREFIX}toggleFiltersButton`, {
           count: countSelected,
@@ -120,14 +84,14 @@ function SearchFiltersControl({
           )}
         </div>
         <div className="margin-y-3">
-          <DistanceFilter
+          <DistanceInput
             filters={filters}
             setFilters={setFilters}
             tPrefix={`${T_PREFIX}filters.distance.`}
           />
         </div>
         <div className="margin-y-3">
-          <TypeOfHelpFilter
+          <TypeOfHelpInput
             options={[
               TypeOfHelp.SubstanceUse,
               TypeOfHelp.CourtMandatedTreatment,
@@ -139,10 +103,10 @@ function SearchFiltersControl({
           />
         </div>
         <div className="margin-y-3">
-          <FeePreferenceFilter
+          <FeesPreferenceInput
             filters={filters}
             setFilters={setFilters}
-            t={t}
+            tPrefix={`${T_PREFIX}filters.feesPreference.`}
           />
         </div>
         <Button

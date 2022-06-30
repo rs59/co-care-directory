@@ -7,50 +7,54 @@ import {
 } from "@trussworks/react-uswds";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { SearchFilters } from "../../types";
 import { DEFAULT_RADIUS_MILES } from "../../util";
+import ZipInput from "./ZipInput";
 
 const ZipButton = styled(Button)`
   max-width: 6rem;
+  max-height: 2.5rem;
   margin-right: 0;
 `;
 
 function ZipCard() {
-  const [zip, setZip] = useState<string>("");
+  const [filters, setFilters] = useState<SearchFilters>({
+    zip: "",
+    miles: `${DEFAULT_RADIUS_MILES}`,
+    typesOfHelp: [],
+    feePreferences: [],
+  });
 
   const { t } = useTranslation();
   const navigate = useNavigate();
   const T_PREFIX = "components.home.";
   return (
-    <Card containerProps={{ className: "border-0" }}>
+    <Card
+      className="margin-bottom-0"
+      containerProps={{ className: "border-0 margin-bottom-0" }}
+      gridLayout={{ col: 12, tablet: { col: 7 } }}
+    >
       <CardBody>
         <p>{t(`${T_PREFIX}zipPrompt`)}</p>
         <form
           onSubmit={(evt) => {
             evt.preventDefault();
-            navigate(`/search?zip=${zip}&miles=${DEFAULT_RADIUS_MILES}`, {
-              replace: false,
+            navigate({
+              pathname: "/search",
+              search: createSearchParams(filters).toString(),
             });
           }}
         >
-          <Label htmlFor="zip" className="margin-bottom-1">
-            {t(`${T_PREFIX}zipInput`)}
-          </Label>
-          <div className="display-flex">
-            <TextInput
-              className="margin-top-0 margin-right-1"
-              id="zip"
-              name="zip"
-              type="text"
-              maxLength={5}
-              value={zip}
-              onChange={
-                (evt) => setZip(evt.target.value.replace(/[^0-9]+/g, "")) // only allow numbers
-              }
+          <div className="display-flex flex-align-end">
+            <ZipInput
+              filters={filters}
+              setFilters={setFilters}
+              tPrefix={`${T_PREFIX}.zip.`}
             />
-            <ZipButton type="submit" className="usa-button">
-              {t(`${T_PREFIX}searchButton`)}
+            <ZipButton type="submit" className="usa-button margin-left-1">
+              {t(`${T_PREFIX}searchButton`)}{" "}
             </ZipButton>
           </div>
         </form>

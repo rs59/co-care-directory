@@ -88,7 +88,8 @@
     }
   },
   "guidedSearch": {
-    "who": {
+    "nextQuestion": "Next question",
+    "helpRecipient": {
       "question": "Are you looking for help for yourself or someone you care about?",
       "answers": {
         "yourself": "I am searching for myself",

@@ -86,6 +86,12 @@ export const offersAnyTypesOfHelpNeeded = (
   careProvider: CareProviderSearchResult,
   helpNeeded: TypeOfHelp[]
 ): boolean => {
+  // remove user-facing no-op types from applied filters
+  helpNeeded = helpNeeded.filter(
+    (typeOfHelp) =>
+      typeOfHelp != TypeOfHelp.Unsure && typeOfHelp != TypeOfHelp.None
+  );
+
   // if no help types specified, don't apply any filter
   if (!helpNeeded.length) {
     return true;

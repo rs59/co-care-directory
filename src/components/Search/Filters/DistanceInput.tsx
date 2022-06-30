@@ -5,19 +5,20 @@ import { SearchFilters } from "../../../types";
 import { MILE_DISTANCE_OPTIONS } from "../../../util";
 import { FilterFieldset } from "./Control";
 
-type DistanceFilterProps = {
+type DistanceInputProps = {
   filters: SearchFilters;
   setFilters: Dispatch<SetStateAction<SearchFilters>>;
   tPrefix: string;
 };
 
-function DistanceFilter({ filters, setFilters, tPrefix }: DistanceFilterProps) {
+function DistanceInput({ filters, setFilters, tPrefix }: DistanceInputProps) {
   const { t } = useTranslation();
 
   const setDistanceFilter = (miles: string) => {
     setFilters({ ...filters, miles });
   };
 
+  // TODO: consolidate getRadio logic? (see HelpRecipientInput)
   const getRadio = (miles: string) => (
     <Radio
       id={miles.toString()}
@@ -39,4 +40,4 @@ function DistanceFilter({ filters, setFilters, tPrefix }: DistanceFilterProps) {
   );
 }
 
-export default DistanceFilter;
+export default DistanceInput;
