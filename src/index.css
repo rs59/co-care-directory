@@ -52,13 +52,18 @@ body {
   background-color: white;
 }
 
+.usa-footer__secondary-section {
+  background-color: var(--dark-blue, darkblue);
+  color: white;
+}
+
+.usa-footer__secondary-section a {
+  color: white;
+}
+
 /* create custom classes and styles */
 .data-icon {
   color: var(--dark-blue, darkblue);
-}
-
-.wrap-text {
-  word-break: break-word;
 }
 
 .top-neg-50px {

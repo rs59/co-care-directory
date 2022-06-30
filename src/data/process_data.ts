@@ -9,13 +9,12 @@ import {
   LANGUAGES,
   MENTAL_HEALTH_SERVICES,
   POPULATIONS_SERVED,
-  SubstanceUseServices,
   SUBSTANCE_USE_SERVICES,
   WeeklyHours,
 } from "../types";
 import { LatLngTuple } from "leaflet";
 
-const INPUT_FILE = "./geocoding_ladders/geocoded_ladders_extract.csv";
+const INPUT_FILE = "../../raw_data/ladders.csv";
 const OUTPUT_FILE = "./ladders_data.json";
 
 type InputRow = {
@@ -89,9 +88,8 @@ type InputRow = {
   "Gender Responsive Ttmt for Women": string;
   "Edu&Ttmt Svcs for Persons in CJS": string;
   "Provider Directory Form Modified Date": string;
-  latitude: string;
-  longitude: string;
-  latlong_source: string;
+  lat: string;
+  lon: string;
 };
 
 const splitBySemicolons = (input: string): string[] => {
@@ -148,8 +146,8 @@ const getHoursOfOperation = (row: InputRow): WeeklyHours => {
 };
 
 const getLatLng = (row: InputRow): LatLngTuple | null => {
-  const lat = parseFloat(row.latitude);
-  const lng = parseFloat(row.longitude);
+  const lat = parseFloat(row.lat);
+  const lng = parseFloat(row.lon);
   if (!!(lat && lng)) {
     return [lat, lng];
   }

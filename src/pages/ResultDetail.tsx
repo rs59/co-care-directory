@@ -66,7 +66,11 @@ function ResultDetail() {
               <div className="display-grid">
                 <Map
                   mapContainerProps={{ center: data.latlng, zoom: 14 }}
-                  mapContainerStyles={{ flex: 1, height: "300px" }}
+                  mapContainerStyles={{
+                    flex: 1,
+                    height: "300px",
+                    borderRadius: "10px",
+                  }}
                 >
                   <Marker
                     icon={markerIcon}

@@ -1,6 +1,5 @@
 import "leaflet/dist/leaflet.css";
 
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
 import { Icon, LeafletEventHandlerFnMap, Map as LeafletMap } from "leaflet";
 
 import {
@@ -46,14 +45,14 @@ function Map({
 }: PropsWithChildren<MapProps>) {
   return (
     <MapContainer
-      style={{ height: "500px", borderRadius: "10px", ...mapContainerStyles }}
+      style={{ height: "500px", ...mapContainerStyles }}
       scrollWheelZoom={false}
       {...mapContainerProps}
       ref={mapRef}
     >
       <MapEvents eventHandlers={eventHandlers} />
       <TileLayer
-        url="https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg"
+        url="https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png"
         attribution={`Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.`}
         {...tileLayerProps}
       />

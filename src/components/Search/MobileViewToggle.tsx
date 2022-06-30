@@ -19,6 +19,7 @@ function MobileViewToggle({
           base={isListView}
           outline={!isListView}
           onClick={onShowList}
+          className="radius-pill"
         >
           List view
         </Button>
@@ -27,6 +28,7 @@ function MobileViewToggle({
           base={!isListView}
           outline={isListView}
           onClick={onShowMap}
+          className="radius-pill"
         >
           Map view
         </Button>

@@ -1,12 +1,27 @@
 {
   "home": {
-    "heading": "Find behavioral health care that's right for you.",
-    "zipPrompt": "Enter your zip code to find care near your area"
+    "heading": "Find behavioral health care that’s meaningful for you.",
+    "zipPrompt": "Enter your zip code to find care near your area",
+    "_coloradoCrisisService": {
+      "heading": "If you’re experiencing crisis",
+      "content": "No matter what you’re going through, help is available. Call Colorado Crisis Services at 844-493-TALK (8255) or text TALK to 38255.",
+      "cta": "Learn more at ColoradoCrisisServices.org"
+    },
+    "_iMatter": {
+      "heading": "Free therapy for youth",
+      "content": "I Matter can connect youth 18 years of age and younger (21 years or younger if receiving special education services) with a therapist for up to 6 free and confidential counseling sessions.",
+      "cta": "Visit IMatterColorado.org to find a therapist and schedule an appointment."
+    },
+    "_bha": {
+      "heading": "Our committment to you",
+      "content": "You’ll never need to create an account to use this service, and any personally identifiable information you share will be kept secure.",
+      "cta": "Read our privacy policy."
+    }
   },
   "search": {
     "heading": "Results near",
-    "resultCount_one": "Result",
-    "resultCount_other": "Results"
+    "resultCount_one": "{{count}} result",
+    "resultCount_other": "{{count}} results"
   },
   "resultDetail": {
     "backToSearch": "Back to search",
@@ -70,6 +85,46 @@
       "ResidentialChildCareFacility": "Residential Child Care Facility",
       "ResidentialLongTermTreatment": "Residential Long Term Treatment",
       "ResidentialShortTermTreatment": "Residential Short Term Treatment"
+    }
+  },
+  "guidedSearch": {
+    "who": {
+      "question": "Are you looking for help for yourself or someone you care about?",
+      "answers": {
+        "yourself": "I am searching for myself",
+        "someone": "I am searching for someone I care about"
+      }
+    },
+    "typeOfHelp": {
+      "yourself": {
+        "question": "Please select the statements below that best describe the type of help you are looking for.",
+        "answers": {
+          "substance_use": "My drug and/or alcohol use",
+          "court_mandated_treatment": "My court-mandated treatment",
+          "mental_health": "My mental health (persistent feelings of sadness, loneliness, worry...)",
+          "suicidal_ideation": "Thoughts about killing myself and/or wishing I was dead",
+          "unsure": "Unsure",
+          "none": "None of the above"
+        }
+      },
+      "someone": {
+        "question": "Please select the statements below that best describe the type of help the person you care about is looking for.",
+        "answers": {
+          "substance_use": "Someone I care about needs help with drugs and/or alcohol use",
+          "court_mandated_treatment": "Someone I care about needs court-mandated treatment",
+          "mental_health": "Someone I care about needs help with mental health (persistent feelings of sadness, loneliness, worry....)",
+          "suicidal_ideation": "Someone I care about is having thoughts about killing themself and/or wishing they were dead",
+          "unsure": "Unsure",
+          "none": "None of the above"
+        }
+      }
+    },
+    "location": {
+      "question": "Where are you looking for care?"
+    },
+    "distance": {
+      "distance": "How far are you, or the person you care about, able to travel for care?",
+      "withinMiles": "Within {{n}} miles"
     }
   }
 }

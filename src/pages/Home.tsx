@@ -1,80 +1,111 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardGroup,
-  CardHeader,
-  Grid,
-  GridContainer,
-  Label,
-  TextInput,
-} from "@trussworks/react-uswds";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { CardGroup, Grid, GridContainer } from "@trussworks/react-uswds";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { DEFAULT_RADIUS_MILES } from "../util";
 import { useTranslation } from "react-i18next";
+import ContentCard from "../components/Home/ContentCard";
+import heroPath from "../images/hero.png";
+import { ReactComponent as ColoradoCrisisServicesLogo } from "../images/logos/colorado_crisis_services.svg";
+import { ReactComponent as IMatterLogo } from "../images/logos/imatter.svg";
+import { ReactComponent as BhaLogo } from "../images/logos/bha.svg";
+import ZipCard from "../components/Home/ZipCard";
 
-const ZipButton = styled(Button)`
-  max-width: 6rem;
-  margin-right: 0;
+const Hero = styled.img`
+  max-width: 150%;
+  margin-left: -9%; // WHY!
+`;
+
+const ContentOverlay = styled.div`
+  position: relative;
+  margin-top: -20%;
+`;
+
+const Heading = styled.h1`
+  color: black;
+  background-color: white;
+  @media (min-width: 40em) {
+    color: white;
+    background-color: transparent;
+  }
 `;
 
 function Home() {
   const { t } = useTranslation();
-  const [zip, setZip] = useState<string>("");
-
-  const navigate = useNavigate();
+  const T_PREFIX = "pages.home.";
 
   return (
     <GridContainer>
-      <Grid row className="padding-top-4">
-        <Grid col={12} tablet={{ col: 6 }}>
-          <CardGroup>
-            <Card>
-              <CardHeader>
-                <h1 className="usa-card__heading">{t("pages.home.heading")}</h1>
-              </CardHeader>
-              <CardBody>
-                <p>{t("pages.home.zipPrompt")}</p>
-                <form
-                  onSubmit={(evt) => {
-                    evt.preventDefault();
-                    navigate(
-                      `/search?zip=${zip}&miles=${DEFAULT_RADIUS_MILES}`,
-                      {
-                        replace: false,
-                      }
-                    );
-                  }}
-                >
-                  <Label htmlFor="zip" className="margin-bottom-1">
-                    {t("common.zipInput")}
-                  </Label>
-                  <div className="display-flex">
-                    <TextInput
-                      className="margin-top-0 margin-right-1"
-                      id="zip"
-                      name="zip"
-                      type="text"
-                      maxLength={5}
-                      value={zip}
-                      onChange={
-                        (evt) =>
-                          setZip(evt.target.value.replace(/[^0-9]+/g, "")) // only allow numbers
-                      }
-                    />
-                    <ZipButton type="submit" className="usa-button">
-                      {t("common.searchButton")}
-                    </ZipButton>
-                  </div>
-                </form>
-              </CardBody>
-            </Card>
-          </CardGroup>
+      <Hero src={heroPath} />
+      <ContentOverlay>
+        <Grid row>
+          <Grid col={12} tablet={{ col: 8 }}>
+            <Heading className="radius-lg padding-2">
+              {t(`${T_PREFIX}heading`)}
+            </Heading>
+            <CardGroup className="bg-white radius-lg padding-x-1 tablet:padding-y-2">
+              <ZipCard />
+            </CardGroup>
+          </Grid>
         </Grid>
-      </Grid>
+        <hr className="margin-bottom-3" />
+        <Grid row>
+          <Grid col={12}>
+            <CardGroup>
+              <ContentCard
+                headerContent={<ColoradoCrisisServicesLogo />}
+                bodyContent={
+                  <>
+                    <h2 className="font-body-lg">
+                      {t(`${T_PREFIX}_coloradoCrisisService.heading`)}
+                    </h2>
+                    <p>{t(`${T_PREFIX}_coloradoCrisisService.content`)}</p>
+                    <Link
+                      to="https://coloradocrisisservices.org"
+                      target="_blank"
+                      type="external"
+                    >
+                      {t(`${T_PREFIX}_coloradoCrisisService.cta`)}
+                    </Link>
+                  </>
+                }
+              />
+              <ContentCard
+                headerContent={<IMatterLogo />}
+                bodyContent={
+                  <>
+                    <h2 className="font-body-lg">
+                      {t(`${T_PREFIX}_iMatter.heading`)}
+                    </h2>
+                    <p>{t(`${T_PREFIX}_iMatter.content`)}</p>
+                    <Link
+                      to="https://imattercolorado.org"
+                      target="_blank"
+                      type="external"
+                    >
+                      {t(`${T_PREFIX}_iMatter.cta`)}
+                    </Link>
+                  </>
+                }
+              />
+              <ContentCard
+                headerContent={<BhaLogo />}
+                bodyContent={
+                  <>
+                    <h2 className="font-body-lg">
+                      {t(`${T_PREFIX}_bha.heading`)}
+                    </h2>
+                    <p>{t(`${T_PREFIX}_bha.content`)}</p>
+                    <Link to="/privacy-policy">
+                      {t(`${T_PREFIX}_bha.cta`)}
+                    </Link>{" "}
+                  </>
+                }
+              />
+            </CardGroup>
+          </Grid>
+        </Grid>
+      </ContentOverlay>
     </GridContainer>
   );
 }

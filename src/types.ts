@@ -1,5 +1,3 @@
-import { LatLng } from "leaflet";
-
 export type DailyHours =
   | {
       open: true;
@@ -157,7 +155,7 @@ export interface ZipData {
 
 export type SearchFilters = {
   zip: string;
-  miles: number;
+  miles: string;
   typesOfHelp: TypeOfHelp[];
   feePreferences: FeePreference[];
 };
@@ -167,4 +165,6 @@ export enum TypeOfHelp {
   CourtMandatedTreatment = "court_mandated_treatment",
   MentalHealth = "mental_health",
   SuicidalIdeation = "suicidal_ideation",
+  Unsure = "unsure",
+  None = "none",
 }

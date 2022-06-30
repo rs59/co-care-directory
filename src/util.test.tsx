@@ -144,7 +144,7 @@ describe("getMatchingCare", () => {
     test("it does not return error if valid CO zipcode provided", () => {
       const { error } = getMatchingCare([DUMMY_CARE_PROVIDER], {
         zip: VALID_CO_ZIP,
-        miles: DEFAULT_RADIUS_MILES,
+        miles: `${DEFAULT_RADIUS_MILES}`,
         typesOfHelp: [],
         feePreferences: [],
       });
@@ -154,7 +154,7 @@ describe("getMatchingCare", () => {
     test("it returns error if provided zip is not valid - length < 5", () => {
       const { error } = getMatchingCare([DUMMY_CARE_PROVIDER], {
         zip: INVALID_ZIP,
-        miles: DEFAULT_RADIUS_MILES,
+        miles: `${DEFAULT_RADIUS_MILES}`,
         typesOfHelp: [],
         feePreferences: [],
       });
@@ -164,7 +164,7 @@ describe("getMatchingCare", () => {
     test("it returns error if provided zip is not valid - not in CO list", () => {
       const { error } = getMatchingCare([DUMMY_CARE_PROVIDER], {
         zip: VALID_NOT_CO_ZIP,
-        miles: DEFAULT_RADIUS_MILES,
+        miles: `${DEFAULT_RADIUS_MILES}`,
         typesOfHelp: [],
         feePreferences: [],
       });
@@ -197,7 +197,7 @@ describe("getMatchingCare", () => {
 
     const { results } = getMatchingCare(DATA, {
       zip: VALID_CO_ZIP,
-      miles: DEFAULT_RADIUS_MILES,
+      miles: `${DEFAULT_RADIUS_MILES}`,
       typesOfHelp: [],
       feePreferences: [],
     });

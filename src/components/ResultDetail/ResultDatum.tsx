@@ -7,12 +7,12 @@ type ResultDatumProps = {
 
 function ResultDatum({ Icon, children }: PropsWithChildren<ResultDatumProps>) {
   return (
-    <Grid row className="margin-y-2 flex-align-start">
-      <Grid col={1} className="display-flex flex-justify-center">
-        <Icon className="data-icon" />
-      </Grid>
-      <Grid col>{children}</Grid>
-    </Grid>
+    <div className="margin-y-2 display-flex">
+      <div className="display-flex flex-justify-center margin-right-05">
+        <Icon className="data-icon width-3" />
+      </div>
+      <div className="flex-grow-1">{children}</div>
+    </div>
   );
 }
 
