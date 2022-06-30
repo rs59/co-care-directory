@@ -17,10 +17,11 @@ export default function ResultCard({
   return (
     <div>
       <MilesAway meters={data.distance} />
-      <h3 className="usa-card__heading margin-top-1">
+      <h3 className="usa-card__heading margin-top-1 margin-bottom-3">
         <Link
           to={`/result/${data.id}`}
           state={{ prevSearch: location.search, data }}
+          className="usa-link"
         >
           {data.name}
         </Link>

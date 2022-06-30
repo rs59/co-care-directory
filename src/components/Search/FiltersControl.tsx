@@ -1,8 +1,15 @@
 import { Button, Checkbox, Fieldset, Radio } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
 import { TFunction, useTranslation } from "react-i18next";
+import styled from "styled-components";
 import { FeePreference, SearchFilters, TypeOfHelp } from "../../types";
 import { MILE_DISTANCE_OPTIONS, toggleItemInList } from "../../util";
+
+const FilterFieldset = styled(Fieldset)`
+  legend {
+    font-weight: bold;
+  }
+`;
 
 const T_PREFIX = "components.search.";
 const DistanceFilter = ({
@@ -33,9 +40,9 @@ const DistanceFilter = ({
   );
 
   return (
-    <Fieldset legend={t(`${T_PREFIX}distance`)}>
+    <FilterFieldset legend={t(`${T_PREFIX}distance`)}>
       {MILE_DISTANCE_OPTIONS.map((miles) => getRadio(miles))}
-    </Fieldset>
+    </FilterFieldset>
   );
 };
 
@@ -67,11 +74,11 @@ const TypeOfHelpFilter = ({
   );
 
   return (
-    <Fieldset legend={t(`${T_PREFIX}typeOfHelp`)}>
+    <FilterFieldset legend={t(`${T_PREFIX}typeOfHelp`)}>
       {getCheckbox(TypeOfHelp.SubstanceUse)}
       {getCheckbox(TypeOfHelp.CourtMandatedTreatment)}
       {getCheckbox(TypeOfHelp.MentalHealth)}
-    </Fieldset>
+    </FilterFieldset>
   );
 };
 
@@ -104,11 +111,11 @@ const FeePreferenceFilter = ({
   );
 
   return (
-    <Fieldset legend={t(`${T_PREFIX}feePreference`)}>
+    <FilterFieldset legend={t(`${T_PREFIX}feePreference`)}>
       {getCheckbox("PrivateInsurance")}
       {getCheckbox("Medicaid")}
       {getCheckbox("SlidingFeeScale")}
-    </Fieldset>
+    </FilterFieldset>
   );
 };
 
@@ -163,20 +170,22 @@ function SearchFiltersControl({
           count: countSelected,
         })}
       </Button>
-      {countSelected > 0 && (
-        <Button
-          type="button"
-          onClick={() => {
-            const cleared = clearOptionalFilters(filters);
-            setFilters(cleared);
-            onApplyFilters(cleared);
-          }}
-          unstyled
-        >
-          {t(`${T_PREFIX}clearFiltersButton`)}
-        </Button>
-      )}
       <div className={isExpanded ? "display-block" : "display-none"}>
+        <div className="margin-y-2">
+          {countSelected > 0 && (
+            <Button
+              type="button"
+              onClick={() => {
+                const cleared = clearOptionalFilters(filters);
+                setFilters(cleared);
+                onApplyFilters(cleared);
+              }}
+              unstyled
+            >
+              {t(`${T_PREFIX}clearFiltersButton`)}
+            </Button>
+          )}
+        </div>
         <div className="margin-y-3">
           <DistanceFilter filters={filters} setFilters={setFilters} t={t} />
         </div>
@@ -200,9 +209,11 @@ function SearchFiltersControl({
         >
           {t(`${T_PREFIX}viewResultsButton`)}
         </Button>
-        <Button type="button" onClick={() => setIsExpanded(false)} unstyled>
-          {t("common.cancel")}
-        </Button>
+        <div className="padding-top-2">
+          <Button type="button" onClick={() => setIsExpanded(false)} unstyled>
+            {t("common.cancel")}
+          </Button>
+        </div>
       </div>
     </div>
   );

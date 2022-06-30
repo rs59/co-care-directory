@@ -45,7 +45,7 @@ function Map({
 }: PropsWithChildren<MapProps>) {
   return (
     <MapContainer
-      style={{ height: "500px", borderRadius: "10px", ...mapContainerStyles }}
+      style={{ height: "500px", ...mapContainerStyles }}
       scrollWheelZoom={false}
       {...mapContainerProps}
       ref={mapRef}

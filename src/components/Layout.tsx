@@ -9,7 +9,7 @@ function Layout() {
     <>
       <Header basic color="primary" role="banner">
         <Banner />
-        <div className="display-flex flex-justify-center">
+        <div className="display-flex flex-justify-center border-bottom border-base-lighter">
           <div className="padding-top-2 padding-bottom-1 height-auto">
             <a href="/" title="Home" aria-label="Home">
               <ColoradoBhaLogo />
@@ -18,9 +18,7 @@ function Layout() {
         </div>
       </Header>
 
-      <div className="usa-section padding-top-2">
-        <Outlet />
-      </div>
+      <Outlet />
 
       <Footer />
     </>

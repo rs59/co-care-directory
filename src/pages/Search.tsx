@@ -109,14 +109,6 @@ const Mobile = ({
         <ResultsList results={results} isMobile />
       </div>
       <div className={isListView ? "display-none" : ""} key="mobile-map">
-        <Alert
-          type="info"
-          slim
-          headingLevel=""
-          className="radius-lg margin-y-2"
-        >
-          Tap a marker to pull up information for that location.
-        </Alert>
         <div className="padding-x-2">
           <ResultsMap
             bounds={getResultBounds(results)}
@@ -151,7 +143,7 @@ const Mobile = ({
               ))}
           </ResultsMap>
         </div>
-        {selectedResult && (
+        {selectedResult ? (
           <div className="bg-white border border-base-lighter radius-lg padding-2 margin-bottom-1 position-relative top-neg-50px z-top">
             <Grid className="flex-justify-end" row>
               <Grid col="auto">
@@ -171,6 +163,15 @@ const Mobile = ({
               </Link>
             </ResultCard>
           </div>
+        ) : (
+          <Alert
+            type="info"
+            slim
+            headingLevel=""
+            className="radius-lg margin-y-2"
+          >
+            Tap a marker to pull up information for that location.
+          </Alert>
         )}
       </div>
     </div>
@@ -245,7 +246,6 @@ function Search() {
             ) : (
               <>
                 <h2>
-                  {searchResult.results.length}{" "}
                   {t("pages.search.resultCount", {
                     count: searchResult.results.length,
                   })}

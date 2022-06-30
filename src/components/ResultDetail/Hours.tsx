@@ -11,7 +11,7 @@ function Hours({ hours }: { hours: WeeklyHours }) {
   const { t } = useTranslation();
   if (!hours) {
     return (
-      <div className="margin-bottom-1">{t(`${T_PREFIX}contactForHours`)}</div>
+      <div className="margin-bottom-1">{t(`${T_PREFIX}contactForInfo`)}</div>
     );
   }
   return (

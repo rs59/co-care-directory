@@ -12,7 +12,7 @@
     "toggleFiltersButton_zero": "Filter results",
     "toggleFiltersButton_one": "Filter results ({{count}} selected)",
     "toggleFiltersButton_other": "Filter results ({{count}} selected)",
-    "clearFiltersButton": "Clear all",
+    "clearFiltersButton": "Clear all filters",
     "viewResultsButton": "View results",
     "distance": "Distance",
     "withinMiles": "Within {{n}} miles",
@@ -22,11 +22,11 @@
       "court_mandated_treatment": "Court-mandated treatment",
       "mental_health": "Mental health (persistent feelings of sadness, loneliness, worry, suicidal thoughts)"
     },
-    "feePreference": "Payment options",
+    "feePreference": "Payment types accepted",
     "feePreferenceAnswer": {
-      "Medicaid": "Accepts Medicaid",
-      "PrivateInsurance": "Accepts private insurance",
-      "SlidingFeeScale": "Offers sliding fee discounts"
+      "Medicaid": "Medicaid",
+      "PrivateInsurance": "Private insurance",
+      "SlidingFeeScale": "Sliding fee scale"
     }
   },
   "resultDetail": {
@@ -41,13 +41,13 @@
     "friday": "Friday",
     "saturday": "Saturday",
     "sunday": "Sunday",
-    "contactForHours": "Please contact the Clinic or Provider directory for hours",
-    "fees": "Fees",
+    "contactForInfo": "Please contact the clinic or organization for information",
+    "fees": "Payment types accepted",
     "_fees": {
       "Medicaid": "Medicaid",
-      "PrivateInsurance": "Private Insurance",
-      "SelfPay": "Self Pay",
-      "SlidingFeeScale": "Sliding Fee Scale"
+      "PrivateInsurance": "Private insurance",
+      "SelfPay": "Self pay",
+      "SlidingFeeScale": "Sliding fee scale"
     }
   },
   "home": {
