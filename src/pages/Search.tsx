@@ -50,30 +50,32 @@ const Desktop = ({ results }: { results: CareProviderSearchResult[] }) => {
           <ResultsList results={results} selectedResultId={selectedResultId} />
         </Grid>
         <Grid tablet={{ col: 7 }} key="desktop-map">
-          <ResultsMap bounds={getResultBounds(results)}>
-            {results
-              .filter((result) => !!result.latlng)
-              .map((result) => (
-                <Marker
-                  position={result.latlng as LatLngTuple}
-                  icon={
-                    selectedResultId === result.id
-                      ? markerActiveIcon
-                      : markerIcon
-                  }
-                  zIndexOffset={
-                    selectedResultId === result.id ? 1000 : undefined
-                  }
-                  key={result.id}
-                  eventHandlers={{
-                    click: () => {
-                      setSelectedResultId(result.id);
-                      document.getElementById(result.id)?.scrollIntoView();
-                    },
-                  }}
-                />
-              ))}
-          </ResultsMap>
+          <div className="border-right border-left border-base-lighter">
+            <ResultsMap bounds={getResultBounds(results)}>
+              {results
+                .filter((result) => !!result.latlng)
+                .map((result) => (
+                  <Marker
+                    position={result.latlng as LatLngTuple}
+                    icon={
+                      selectedResultId === result.id
+                        ? markerActiveIcon
+                        : markerIcon
+                    }
+                    zIndexOffset={
+                      selectedResultId === result.id ? 1000 : undefined
+                    }
+                    key={result.id}
+                    eventHandlers={{
+                      click: () => {
+                        setSelectedResultId(result.id);
+                        document.getElementById(result.id)?.scrollIntoView();
+                      },
+                    }}
+                  />
+                ))}
+            </ResultsMap>
+          </div>
         </Grid>
       </Grid>
     </div>
@@ -109,7 +111,7 @@ const Mobile = ({
         <ResultsList results={results} isMobile />
       </div>
       <div className={isListView ? "display-none" : ""} key="mobile-map">
-        <div className="padding-x-2">
+        <div className="border border-base-lighter">
           <ResultsMap
             bounds={getResultBounds(results)}
             mapRef={mapRef}
@@ -226,7 +228,7 @@ function Search() {
       {searchResult && (
         <GridContainer>
           <div className="border-bottom border-base-lighter">
-            <h1>
+            <h1 className="margin-y-2">
               {t("pages.search.heading")} {searchFilters.zip}
             </h1>
             <div className="margin-y-2">
@@ -245,7 +247,7 @@ function Search() {
               <p className="text-error">{searchResult.error}</p>
             ) : (
               <>
-                <h2>
+                <h2 className="margin-y-2">
                   {t("pages.search.resultCount", {
                     count: searchResult.results.length,
                   })}

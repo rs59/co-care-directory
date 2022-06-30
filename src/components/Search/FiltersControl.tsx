@@ -162,7 +162,7 @@ function SearchFiltersControl({
     <div>
       <Button
         type="button"
-        className="usa-button"
+        className="usa-button--base radius-pill"
         onClick={() => setIsExpanded(!isExpanded)}
         outline={countSelected === 0}
       >
