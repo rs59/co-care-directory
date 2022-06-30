@@ -22,6 +22,12 @@ variable "bucket_name" {
   default       = ""
 }
 
+variable "domains" {
+    type = set(string)
+    description = "The URLs to have routing setup for."
+    default = []
+}
+
 # --------------------------------------
 # Providers: Setup AWS provider
 # --------------------------------------
@@ -213,6 +219,16 @@ resource "aws_cloudfront_distribution" "cdn" {
         }
     }
 }
+
+# --------------------------------------
+# Domain/URL: Route53 domains and hosted zones
+# --------------------------------------
+resource "aws_route53_zone" "hosted_zones" {
+    for_each = var.domains
+    name = each.key
+}
+
+
 
 # --------------------------------------
 # Output: Things to print out when finished executing

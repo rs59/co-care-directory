@@ -125,7 +125,8 @@ docker build -t coloradodigitalservice/co-care-directory-deploy .
 1. Launch a terminal in the dev container
    - `docker run -it --rm coloradodigitalservice/co-care-directory-deploy bash`
 1. Setup environment variables:
-   - `export TF_VAR_bucket_name` with a [valid name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) of the S3 bucket where built app files will be stored. This must be unique across all of AWS.
+   - `export TF_VAR_bucket_name="<S3 bucket name>"` with a [valid name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) of the S3 bucket where built app files will be stored. This must be unique across all of AWS.
+   - `export TF_VAR_domains='["domain1.com","domain2.org"]'` with the relevant domains
    - `export AWS_ACCESS_KEY_ID="<your AWS user's access key ID>"` 
    - `export AWS_SECRET_ACCESS_KEY="<your AWS secret access key>"` 
 1. Setup Terraform: `terraform init` (TODO: Remove this when state is stored centrally)
