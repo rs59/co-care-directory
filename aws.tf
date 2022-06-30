@@ -228,17 +228,18 @@ resource "aws_cloudfront_distribution" "cdn" {
 # Domain/URL: Route53 domains and hosted zones
 # --------------------------------------
 
+# This defines the name servers and DNS records that the domain will point to
 resource "aws_route53_zone" "hosted_zones" {
     count = length(var.domains)
     name = var.domains[count.index]
 }
 
-# Change the domain itself to have the hosted zone name servers
+# Change the domain itself to point to the hosted zone name servers
 resource "aws_route53domains_registered_domain" "domains" {
     count = length(aws_route53_zone.hosted_zones)
     domain_name = aws_route53_zone.hosted_zones[count.index].name
     
-    # There doesn't seem to be a way to loop this or pass a list, but there seems to always be 4 name servers
+    # There doesn't seem to be a way to loop this or pass a list, but there seems to always be 4 name servers in an AWS hosted zone
     name_server {
         name = aws_route53_zone.hosted_zones[count.index].name_servers[0]
     }
@@ -253,6 +254,7 @@ resource "aws_route53domains_registered_domain" "domains" {
     }
 }
 
+# Direct the domains to the CloudFront CDN
 resource "aws_route53_record" "domain_a_records" {
     count = length(aws_route53_zone.hosted_zones)
     name = aws_route53_zone.hosted_zones[count.index].name
@@ -266,10 +268,13 @@ resource "aws_route53_record" "domain_a_records" {
     }
 }
 
-resource "aws_acm_certificate" "certificate" {  
+# Create a certificate for the main domain, but allow other domains to be valid per the cert as aliases
+resource "aws_acm_certificate" "certificate" {
+    # count = length(var.domains) > 0 ? 1 : 0 # Do this only for environments with domains  
     domain_name = var.domains[0]
     validation_method = "DNS"
 
+    # alias domains
     subject_alternative_names = slice(var.domains, 1, length(var.domains)) # get the forwarding domains
 
     lifecycle {
@@ -277,6 +282,7 @@ resource "aws_acm_certificate" "certificate" {
     }
 }
 
+# This creates the CNAME record that the certificate will use to validate itself
 resource "aws_route53_record" "record_validation" {
     for_each = {
         for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
@@ -295,14 +301,13 @@ resource "aws_route53_record" "record_validation" {
     zone_id         = each.value.zone_id
 }
 
+# This basically is a watcher to see when the certificate is finished being created and validated. It enables the CloudFront CDN resource to wait to be created until it has the certificate it'll use.
 resource "aws_acm_certificate_validation" "certificate_validation" {
+    # count = length(var.domains) > 0 ? 1 : 0 # Do this only for environments with domains 
     certificate_arn = aws_acm_certificate.certificate.arn
     validation_record_fqdns = [for record in aws_route53_record.record_validation : record.fqdn]
   
 }
-
-
-
 
 # --------------------------------------
 # Output: Things to print out when finished executing
