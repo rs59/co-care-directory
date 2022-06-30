@@ -8,6 +8,7 @@
 # - Providers
 # - Storage
 # - Content Delivery Network (CDN)
+# - Domain/URL
 # - Outputs
 # **************************************
 
@@ -227,7 +228,6 @@ resource "aws_cloudfront_distribution" "cdn" {
 # --------------------------------------
 # Domain/URL: Route53 domains and hosted zones
 # --------------------------------------
-
 # This defines the name servers and DNS records that the domain will point to
 resource "aws_route53_zone" "hosted_zones" {
     count = length(var.domains)
@@ -270,7 +270,7 @@ resource "aws_route53_record" "domain_a_records" {
 
 # Create a certificate for the main domain, but allow other domains to be valid per the cert as aliases
 resource "aws_acm_certificate" "certificate" {
-    # count = length(var.domains) > 0 ? 1 : 0 # Do this only for environments with domains  
+    # count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains  
     domain_name = var.domains[0]
     validation_method = "DNS"
 
@@ -284,6 +284,7 @@ resource "aws_acm_certificate" "certificate" {
 
 # This creates the CNAME record that the certificate will use to validate itself
 resource "aws_route53_record" "record_validation" {
+    # TODO If we can figure out how to conditionally not run this when var.domains is empty, the instructions can avoid asking someone to comment out this section when running without a domain(s)
     for_each = {
         for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
             name    = dvo.resource_record_name
@@ -303,7 +304,7 @@ resource "aws_route53_record" "record_validation" {
 
 # This basically is a watcher to see when the certificate is finished being created and validated. It enables the CloudFront CDN resource to wait to be created until it has the certificate it'll use.
 resource "aws_acm_certificate_validation" "certificate_validation" {
-    # count = length(var.domains) > 0 ? 1 : 0 # Do this only for environments with domains 
+    # count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains 
     certificate_arn = aws_acm_certificate.certificate.arn
     validation_record_fqdns = [for record in aws_route53_record.record_validation : record.fqdn]
   

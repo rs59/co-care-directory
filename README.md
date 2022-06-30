@@ -91,15 +91,16 @@ Using SVGs in React apps is super easy. To make them fully component prop/CSS cu
 
 ### Pre-requisites
 
-Your environment should have the following installed:
-
-- Docker
-
-If you haven't built the Docker container yet, build it while at the root of the code base:
+Your local environment should have Docker installed. If you haven't built the Docker container yet, build it while at the root of the code base:
 
 ```
 docker build -t coloradodigitalservice/co-care-directory-deploy .
 ```
+
+Additionally, it requires that your domains live within Route53 of the same AWS account that this is being run.
+
+(TODO: Figure out how to conditionally allow the script to run without domains, and then just have a CloudFront CDN URL -- good for dev testing of this.)
+
 
 ### First time
 
@@ -110,8 +111,7 @@ docker build -t coloradodigitalservice/co-care-directory-deploy .
       - ✅ Access key
    1. Next
    1. Attach existing policies directly
-      - ✅ AdministratorAccess (TODO: This grants anything. Remove this and specify only what's needed below)
-      - ✅ AmazonS3FullAccess
+      - ✅ AdministratorAccess (TODO: This grants anything. Remove this and specify only what's needed)
    1. Set permission boundary: Create user without a permissions boundary (TODO Reduce this) 
    1. Next
    1. Next
@@ -122,13 +122,11 @@ docker build -t coloradodigitalservice/co-care-directory-deploy .
 ### Deploy
 
 
-1. Launch a terminal in the dev container
-   - `docker run -it --rm coloradodigitalservice/co-care-directory-deploy bash`
-1. Setup environment variables:
-   - `export TF_VAR_bucket_name="<S3 bucket name>"` with a [valid name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) of the S3 bucket where built app files will be stored. This must be unique across all of AWS.
-   - `export TF_VAR_domains='["domain1.com","domain2.org"]'` with the relevant domains
-   - `export AWS_ACCESS_KEY_ID="<your AWS user's access key ID>"` 
-   - `export AWS_SECRET_ACCESS_KEY="<your AWS secret access key>"` 
+1. Launch a terminal in the dev container: `docker run -it --rm coloradodigitalservice/co-care-directory-deploy bash`
+1. Set `export TF_VAR_bucket_name="<S3 bucket name>"` with a [valid name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) of the S3 bucket where built app files will be stored. This must be unique across all of AWS.
+1. Set `export TF_VAR_domains='["domain1.com","domain2.org"]'` with the domains, with primary domain first
+1. Set `export AWS_ACCESS_KEY_ID="<your AWS user's access key ID>"` 
+1. Set `export AWS_SECRET_ACCESS_KEY="<your AWS secret access key>"` 
 1. Setup Terraform: `terraform init` (TODO: Remove this when state is stored centrally)
 1. Build the infrastructure:  `terraform apply` and then type `yes`
 1. Build the apps: `npm run build`
