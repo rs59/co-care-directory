@@ -23,8 +23,8 @@ variable "bucket_name" {
 }
 
 variable "domains" {
-    type = set(string)
-    description = "The URLs to have routing setup for."
+    type = list(string)
+    description = "The URLs to have routing setup for. Primary domain should be first, with forwarding domains following."
     default = []
 }
 
@@ -135,8 +135,7 @@ resource "aws_cloudfront_distribution" "cdn" {
 
     default_root_object = "index.html"
 
-    # TODO Add when we have a domain
-    # aliases = ["mysite.example.com", "yoursite.example.com"]
+    aliases = var.domains
 
     default_cache_behavior {
         allowed_methods  = ["GET", "HEAD", "OPTIONS"]
@@ -157,6 +156,7 @@ resource "aws_cloudfront_distribution" "cdn" {
         max_ttl                = 86400
         compress               = true
         viewer_protocol_policy = "redirect-to-https"
+        
     }
 
     ordered_cache_behavior {
@@ -179,12 +179,16 @@ resource "aws_cloudfront_distribution" "cdn" {
         max_ttl                = 0
         compress               = true
         viewer_protocol_policy = "redirect-to-https"
+
     }
 
     price_class = "PriceClass_100"
 
+    # TODO Add reference to an ACM certificate after certificate generation is done
     viewer_certificate {
-        cloudfront_default_certificate = true
+        # cloudfront_default_certificate = true # TODO Remove
+        acm_certificate_arn = aws_acm_certificate_validation.certificate_validation.certificate_arn
+        ssl_support_method  = "sni-only"
     }
 
     # retain_on_delete = true
@@ -223,10 +227,80 @@ resource "aws_cloudfront_distribution" "cdn" {
 # --------------------------------------
 # Domain/URL: Route53 domains and hosted zones
 # --------------------------------------
+
 resource "aws_route53_zone" "hosted_zones" {
-    for_each = var.domains
-    name = each.key
+    count = length(var.domains)
+    name = var.domains[count.index]
 }
+
+# Change the domain itself to have the hosted zone name servers
+resource "aws_route53domains_registered_domain" "domains" {
+    count = length(aws_route53_zone.hosted_zones)
+    domain_name = aws_route53_zone.hosted_zones[count.index].name
+    
+    # There doesn't seem to be a way to loop this or pass a list, but there seems to always be 4 name servers
+    name_server {
+        name = aws_route53_zone.hosted_zones[count.index].name_servers[0]
+    }
+    name_server {
+        name = aws_route53_zone.hosted_zones[count.index].name_servers[1]
+    }
+    name_server {
+        name = aws_route53_zone.hosted_zones[count.index].name_servers[2]
+    }
+    name_server {
+        name = aws_route53_zone.hosted_zones[count.index].name_servers[3]
+    }
+}
+
+resource "aws_route53_record" "domain_a_records" {
+    count = length(aws_route53_zone.hosted_zones)
+    name = aws_route53_zone.hosted_zones[count.index].name
+    type = "A"
+    zone_id = aws_route53_zone.hosted_zones[count.index].zone_id
+
+    alias {
+        name = aws_cloudfront_distribution.cdn.domain_name
+        zone_id = aws_cloudfront_distribution.cdn.hosted_zone_id
+        evaluate_target_health = false
+    }
+}
+
+resource "aws_acm_certificate" "certificate" {  
+    domain_name = var.domains[0]
+    validation_method = "DNS"
+
+    subject_alternative_names = slice(var.domains, 1, length(var.domains)) # get the forwarding domains
+
+    lifecycle {
+        create_before_destroy = true # Make a new certificate before deleting any matching ones that already exist
+    }
+}
+
+resource "aws_route53_record" "record_validation" {
+    for_each = {
+        for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
+            name    = dvo.resource_record_name
+            record  = dvo.resource_record_value
+            type    = dvo.resource_record_type
+            zone_id = aws_route53_zone.hosted_zones[0].zone_id
+        }
+    }
+
+    allow_overwrite = true
+    name            = each.value.name
+    records         = [each.value.record]
+    ttl             = 60
+    type            = each.value.type
+    zone_id         = each.value.zone_id
+}
+
+resource "aws_acm_certificate_validation" "certificate_validation" {
+    certificate_arn = aws_acm_certificate.certificate.arn
+    validation_record_fqdns = [for record in aws_route53_record.record_validation : record.fqdn]
+  
+}
+
 
 
 
