@@ -97,7 +97,7 @@ Your local environment should have Docker installed. If you haven't built the Do
 docker build -t coloradodigitalservice/co-care-directory-deploy .
 ```
 
-If you have domains attached to this, then they should live inside the target AWS account's Route53 Registered Domains.
+If you want to attach domains the deployment, then they should live inside the target AWS account's Route53 Registered Domains.
 
 
 ### First time
@@ -130,5 +130,5 @@ If you have domains attached to this, then they should live inside the target AW
 1. Build the infrastructure:  `terraform apply` and then type `yes`
 1. Build the apps: `npm run build`
 1. Deploy the app's files: `aws s3 sync build/. s3://$TF_VAR_bucket_name --delete`
-1. Get the URL: `terraform output url` and then go there in your browser
+1. Get the URL: `terraform output` and then navigate to one of the URLs in your browser
 1. Take down the site: `terraform destroy` (TODO: Remove this when state is stored centrally)
