@@ -86,17 +86,6 @@ data "aws_iam_policy_document" "storage_policy" {
     }
 }
 
-resource "aws_s3_bucket_cors_configuration" "storage_cors" {
-    bucket = aws_s3_bucket.storage.bucket
-
-    # TODO Check against https://github.com/alexhyett/terraform-s3-static-website/blob/main/src/s3.tf
-    cors_rule {
-        allowed_methods = ["GET"]
-        allowed_origins = ["*"]
-        # ^ TODO Change to domain
-    }
-}
-
 resource "aws_s3_bucket_website_configuration" "storage_website" {
     bucket = aws_s3_bucket.storage.bucket
     index_document {
@@ -113,11 +102,6 @@ resource "aws_s3_bucket_website_configuration" "storage_website" {
 
 locals {
     s3_origin_id = "S3-${var.bucket_name}"
-
-    # Enables grabbing a Zone ID by domain name
-    # KEY -> domain name
-    # VALUE -> zone ID
-    zone_ids_by_domain = { for zone in aws_route53_zone.hosted_zones : zone.name => zone.zone_id } 
 }
 
 # TODO If we want to make the S3 bucket private, then we can use this
@@ -131,6 +115,7 @@ resource "aws_cloudfront_distribution" "cdn" {
         domain_name = aws_s3_bucket.storage.bucket_regional_domain_name
         origin_id   = local.s3_origin_id
 
+        # TODO If we want to make the S3 bucket private, then we can use this
         # s3_origin_config {
         #     origin_access_identity = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
         # }
@@ -188,16 +173,31 @@ resource "aws_cloudfront_distribution" "cdn" {
 
     }
 
+    # For North America and Europe only, which is the lowest price class
+    # Georestrictions setting later one means only North America or US-based traffic, per CO request
     price_class = "PriceClass_100"
 
-    # TODO Add reference to an ACM certificate after certificate generation is done
-    viewer_certificate {
-        # cloudfront_default_certificate = true # TODO Remove
-        acm_certificate_arn = aws_acm_certificate_validation.certificate_validation.certificate_arn
-        ssl_support_method  = "sni-only"
-    }
+    # viewer_certificate {
+    #     # Use CloudFront cert if no domains, use ACM one if there are domains
+    #     cloudfront_default_certificate = length(var.domains) > 0 ? true : false
+    #     acm_certificate_arn = length(var.domains) > 0 ? aws_acm_certificate_validation.certificate_validation[0].certificate_arn : null
 
-    # retain_on_delete = true
+    #     ssl_support_method  = "sni-only"
+    # }
+
+    # If there are domains, use the ACM certs
+    dynamic "viewer_certificate" {
+        for_each = length(var.domains) > 0 ? [1] : []
+        content {
+            acm_certificate_arn = aws_acm_certificate_validation.certificate_validation[0].certificate_arn
+            ssl_support_method  = "sni-only"        
+        }
+    }
+    # If no domains, use CloudFront's cert
+    dynamic "viewer_certificate" {
+        for_each = length(var.domains) > 0 ? [] : [1]
+        content { cloudfront_default_certificate = true }
+    }
 
     custom_error_response {
         error_caching_min_ttl = 300
@@ -274,8 +274,10 @@ resource "aws_route53_record" "domain_a_records" {
 }
 
 # Create a certificate for the main domain, but allow other domains to be valid per the cert as aliases
+# To allow for not being created if there are no domains, it uses a count for conditional creation ...
+#       This will only ever produce a 0 or 1 element list, so when it is created it should be accessed via element `[0]`
 resource "aws_acm_certificate" "certificate" {
-    # count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains  
+    count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains  
     domain_name = var.domains[0]
     validation_method = "DNS"
 
@@ -287,46 +289,27 @@ resource "aws_acm_certificate" "certificate" {
     }
 }
 
-# This creates the CNAME record that the certificate will use to validate itself
-# resource "aws_route53_record" "record_validation" {
-#     # TODO If we can figure out how to conditionally not run this when var.domains is empty, the instructions can avoid asking someone to comment out this section when running without a domain(s)
-#     for_each = {
-#         for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
-#             name    = dvo.resource_record_name
-#             record  = dvo.resource_record_value
-#             type    = dvo.resource_record_type
-#             # zone_id = aws_route53_zone.hosted_zones[0].zone_id
-#         }
-#     }
+# This creates the CNAME record that the certificate will use to validate itself for each domain
+locals {
+    # Enables grabbing a Zone ID by domain name, needed for `domain_validation_options` and looking up zone IDs
+    # KEY -> domain name
+    # VALUE -> zone ID
+    zone_ids_by_domain = { for zone in aws_route53_zone.hosted_zones : zone.name => zone.zone_id } 
 
-#     allow_overwrite = true
-#     name            = each.value.name
-#     records         = [each.value.record]
-#     ttl             = 60
-#     type            = each.value.type
-#     # zone_id         = each.value.zone_id
-#     zone_id         = aws_route53_zone.hosted_zones[0].zone_id
-# }
-# ****
-# resource "aws_route53_record" "record_validations" {
-#     count = length(var.domains)
-#     name = aws_acm_certificate.certificate.domain_validation_options[count.index]["resource_record_name"]
-#     type = aws_acm_certificate.certificate.domain_validation_options[count.index]["resource_record_type"]
-#     zone_id = aws_route53_zone.hosted_zones[0].zone_id
-#     records = [aws_acm_certificate.certificate.domain_validation_options[count.index]["resource_record_value"]]
-#     ttl = 60
-# }
-# ****
-resource "aws_route53_record" "record_validations" {
-    for_each = { #TODO Capture DVOs in a local, but set to empty if there are no domains
-        for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
+    # Validation options, which are empty if no domains in environment
+    domain_validation_options = length(var.domains) == 0 ? {} : { 
+        for dvo in aws_acm_certificate.certificate[0].domain_validation_options : dvo.domain_name => {
             name    = dvo.resource_record_name
             record  = dvo.resource_record_value
             type    = dvo.resource_record_type
-            # zone_id = dvo.domain_name == "example.org" ? data.aws_route53_zone.example_org.zone_id : data.aws_route53_zone.example_com.zone_id
             zone_id = local.zone_ids_by_domain[dvo.domain_name]
         }
     }
+}
+
+# Set CNAME records on the DNS hosted zones
+resource "aws_route53_record" "record_validations" {
+    for_each = local.domain_validation_options
 
     allow_overwrite = true
     name            = each.value.name
@@ -336,12 +319,12 @@ resource "aws_route53_record" "record_validations" {
     zone_id         = each.value.zone_id
 }
 
-
-
 # This basically is a watcher to see when the certificate is finished being created and validated. It enables the CloudFront CDN resource to wait to be created until it has the certificate it'll use.
+# To allow for not being created if there are no domains, it uses a count for conditional creation ...
+#       This will only ever produce a 0 or 1 element list, so when it is created it should be accessed via element `[0]`
 resource "aws_acm_certificate_validation" "certificate_validation" {
-    # count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains 
-    certificate_arn = aws_acm_certificate.certificate.arn
+    count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains 
+    certificate_arn = aws_acm_certificate.certificate[0].arn
     validation_record_fqdns = [for record in aws_route53_record.record_validations : record.fqdn]
   
 }
@@ -350,7 +333,7 @@ resource "aws_acm_certificate_validation" "certificate_validation" {
 # Output: Things to print out when finished executing
 # --------------------------------------
 
-output "url" {
-    description = "URL that the app can be accessed at"
-    value = "https://${aws_cloudfront_distribution.cdn.domain_name}/"
+output "urls" {
+    description = "URL(s) that the app can be accessed at"
+    value = length(var.domains) > 0 ? jsonencode(var.domains) : aws_cloudfront_distribution.cdn.domain_name
 }

@@ -97,9 +97,7 @@ Your local environment should have Docker installed. If you haven't built the Do
 docker build -t coloradodigitalservice/co-care-directory-deploy .
 ```
 
-Additionally, it requires that your domains live within Route53 of the same AWS account that this is being run.
-
-(TODO: Figure out how to conditionally allow the script to run without domains, and then just have a CloudFront CDN URL -- good for dev testing of this.)
+If you have domains attached to this, then they should live inside the target AWS account's Route53 Registered Domains.
 
 
 ### First time
@@ -124,7 +122,8 @@ Additionally, it requires that your domains live within Route53 of the same AWS 
 
 1. Launch a terminal in the dev container: `docker run -it --rm coloradodigitalservice/co-care-directory-deploy bash`
 1. Set `export TF_VAR_bucket_name="<S3 bucket name>"` with a [valid name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) of the S3 bucket where built app files will be stored. This must be unique across all of AWS.
-1. Set `export TF_VAR_domains='["domain1.com","domain2.org"]'` with the domains, with primary domain first
+1. (optional) Set `export TF_VAR_domains='["domain1.com","domain2.org"]'` with the domains, with primary domain first
+   - If no domains specified, it'll just use a CloudFront generated domain
 1. Set `export AWS_ACCESS_KEY_ID="<your AWS user's access key ID>"` 
 1. Set `export AWS_SECRET_ACCESS_KEY="<your AWS secret access key>"` 
 1. Setup Terraform: `terraform init` (TODO: Remove this when state is stored centrally)
