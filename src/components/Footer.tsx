@@ -10,7 +10,7 @@ const betaLabel = (
   </span>
 );
 function Footer() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <USWDSFooter
       primary={<></>}
