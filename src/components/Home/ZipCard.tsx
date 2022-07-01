@@ -1,10 +1,4 @@
-import {
-  Button,
-  Card,
-  CardBody,
-  Label,
-  TextInput,
-} from "@trussworks/react-uswds";
+import { Button, Card, CardBody } from "@trussworks/react-uswds";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createSearchParams, useNavigate } from "react-router-dom";
@@ -33,11 +27,13 @@ function ZipCard() {
   return (
     <Card
       className="margin-bottom-0"
-      containerProps={{ className: "border-0 margin-bottom-0" }}
+      containerProps={{ className: "border-0 margin-bottom-0 padding-right-5" }}
       gridLayout={{ col: 12, tablet: { col: 7 } }}
     >
       <CardBody>
-        <p>{t(`${T_PREFIX}zipPrompt`)}</p>
+        <p className="text-bold font-body-lg margin-bottom-05">
+          {t(`${T_PREFIX}zipPrompt`)}
+        </p>
         <form
           onSubmit={(evt) => {
             evt.preventDefault();

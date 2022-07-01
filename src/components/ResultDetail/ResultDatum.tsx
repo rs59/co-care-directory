@@ -1,4 +1,3 @@
-import { Grid } from "@trussworks/react-uswds";
 import React, { PropsWithChildren } from "react";
 
 type ResultDatumProps = {

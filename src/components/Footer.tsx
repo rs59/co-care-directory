@@ -4,6 +4,11 @@ import { Link } from "react-router-dom";
 import { ReactComponent as ColoradoBhaLogoWhite } from "../images/logos/colorado_bha_white.svg";
 
 const T_PREFIX = "components.footer.";
+const betaLabel = (
+  <span className="text-normal text-base-darker font-body-sm bg-accent-warm-lighter radius-pill padding-x-1 margin-right-1">
+    BETA
+  </span>
+);
 function Footer() {
   const { t } = useTranslation();
   return (
@@ -17,11 +22,14 @@ function Footer() {
         >
           <Grid col="auto" tablet={{ col: 6 }} className="font-body-2xs">
             <Grid row>
+              <p>
+                {betaLabel}
+                {t(`${T_PREFIX}betaExplanation`)}
+              </p>
+            </Grid>
+            <Grid row>
               {t(`${T_PREFIX}feedbackPrompt`)}
               <Link to="GOOGLE FORM LINK">{t(`${T_PREFIX}feedbackCta`)}</Link>
-            </Grid>
-            <Grid row className="margin-top-2">
-              <Link to="PRIVACY POLICY LINK">{t("common.privacyPolicy")}</Link>
             </Grid>
           </Grid>
           <Grid col="auto" tablet={{ col: 6 }}>

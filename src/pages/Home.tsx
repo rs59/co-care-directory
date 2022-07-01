@@ -1,6 +1,5 @@
 import React from "react";
 import { CardGroup, Grid, GridContainer, Link } from "@trussworks/react-uswds";
-import { Link as RouterLink } from "react-router-dom";
 import styled from "styled-components";
 
 import { useTranslation } from "react-i18next";
@@ -66,21 +65,17 @@ function Home() {
   const { t } = useTranslation();
   const T_PREFIX = "pages.home.";
 
-  const betaLabel = (
-    <span className="text-normal text-base-darker font-body-lg bg-accent-warm-lighter radius-pill padding-x-1">
-      BETA
-    </span>
-  );
-
   return (
     <GridContainer>
       <Hero src={heroPath} />
       <ContentOverlay>
         <Grid row>
-          <Grid col={12}>
-            <Heading className="radius-lg padding-2">
-              {t(`${T_PREFIX}heading`)} {betaLabel}
+          <Grid col={12} tablet={{ col: 7 }}>
+            <Heading className="radius-lg padding-y-2">
+              {t(`${T_PREFIX}heading`)}
             </Heading>
+          </Grid>
+          <Grid col={12}>
             <CardGroup className="bg-white radius-lg padding-x-1 tablet:padding-top-3 justify-content-around">
               <ZipCard />
               <div className="display-flex flex-justify-center margin-bottom-2">
@@ -145,11 +140,7 @@ function Home() {
                     <p>{t(`${T_PREFIX}_bha.content`)}</p>
                   </>
                 }
-                cta={
-                  <RouterLink to="/privacy-policy">
-                    {t(`${T_PREFIX}_bha.cta`)}
-                  </RouterLink>
-                }
+                cta={<></>}
               />
             </CardGroup>
           </Grid>

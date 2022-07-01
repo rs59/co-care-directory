@@ -1,9 +1,8 @@
-import { Button, Checkbox, Fieldset } from "@trussworks/react-uswds";
+import { Button, Fieldset } from "@trussworks/react-uswds";
 import { useEffect, useState } from "react";
-import { TFunction, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { FeePreference, SearchFilters, TypeOfHelp } from "../../../types";
-import { toggleItemInList } from "../../../util";
+import { SearchFilters, TypeOfHelp } from "../../../types";
 import DistanceInput from "./DistanceInput";
 import FeesPreferenceInput from "./FeesPreferenceInput";
 import TypeOfHelpInput from "./TypeOfHelpInput";

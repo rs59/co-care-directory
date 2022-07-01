@@ -1,4 +1,4 @@
-import { Checkbox, Fieldset } from "@trussworks/react-uswds";
+import { Checkbox } from "@trussworks/react-uswds";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchFilters, TypeOfHelp } from "../../../types";

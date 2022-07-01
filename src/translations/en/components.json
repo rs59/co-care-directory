@@ -5,7 +5,8 @@
   },
   "footer": {
     "feedbackPrompt": "Have a suggestion for improvement on this website?",
-    "feedbackCta": "Submit a suggestion on this Google form."
+    "feedbackCta": "Submit a suggestion on this Google form.",
+    "betaExplanation": "This is a new website that is in the process of being developed."
   },
   "search": {
     "milesAway": "{{ miles }} miles away",

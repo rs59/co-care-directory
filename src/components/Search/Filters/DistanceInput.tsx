@@ -1,4 +1,4 @@
-import { Fieldset, Radio } from "@trussworks/react-uswds";
+import { Radio } from "@trussworks/react-uswds";
 import { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 import { SearchFilters } from "../../../types";

@@ -1,4 +1,4 @@
-import { Button, Link } from "@trussworks/react-uswds";
+import { Link } from "@trussworks/react-uswds";
 import { useTranslation } from "react-i18next";
 
 import { ReactComponent as Telephone } from "../../images/phone.svg";
@@ -70,9 +70,9 @@ function BasicResultDetail({ headingLevel, result }: BasicResultDetailProps) {
                   translationPrefix={`${T_PREFIX}_fees.`}
                 />
               </div>
-              <Button type="button" unstyled className="font-ui-xs">
+              {/* <Button type="button" unstyled className="font-ui-xs">
                 What do these mean?
-              </Button>
+              </Button> */}
             </>
           ) : (
             t(`${T_PREFIX}contactForInfo`)
