@@ -26,13 +26,15 @@
           "court_mandated_treatment": "Court-mandated treatment",
           "mental_health": "Mental health (persistent feelings of sadness, loneliness, worry, suicidal thoughts)"
         }
+      },
+      "feePreference": {
+        "question": "Payment types accepted",
+        "answers": {
+          "Medicaid": "Medicaid",
+          "PrivateInsurance": "Private insurance",
+          "SlidingFeeScale": "Sliding fee scale"
+        }
       }
-    },
-    "feePreference": "Payment types accepted",
-    "feePreferenceAnswer": {
-      "Medicaid": "Medicaid",
-      "PrivateInsurance": "Private insurance",
-      "SlidingFeeScale": "Sliding fee scale"
     }
   },
   "resultDetail": {
@@ -59,6 +61,8 @@
   "home": {
     "zipPrompt": "Enter your zip code to find care near your area",
     "searchButton": "Search",
-    "zipInput": "Zip code"
+    "zipInput": "Zip code",
+    "guidedSearchPrompt": "Get a list of providers based on your answers to a few questions.",
+    "guidedSearchButton": "Try our guided experience"
   }
 }
