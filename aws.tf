@@ -113,6 +113,11 @@ resource "aws_s3_bucket_website_configuration" "storage_website" {
 
 locals {
     s3_origin_id = "S3-${var.bucket_name}"
+
+    # Enables grabbing a Zone ID by domain name
+    # KEY -> domain name
+    # VALUE -> zone ID
+    zone_ids_by_domain = { for zone in aws_route53_zone.hosted_zones : zone.name => zone.zone_id } 
 }
 
 # TODO If we want to make the S3 bucket private, then we can use this
@@ -283,14 +288,43 @@ resource "aws_acm_certificate" "certificate" {
 }
 
 # This creates the CNAME record that the certificate will use to validate itself
-resource "aws_route53_record" "record_validation" {
-    # TODO If we can figure out how to conditionally not run this when var.domains is empty, the instructions can avoid asking someone to comment out this section when running without a domain(s)
-    for_each = {
+# resource "aws_route53_record" "record_validation" {
+#     # TODO If we can figure out how to conditionally not run this when var.domains is empty, the instructions can avoid asking someone to comment out this section when running without a domain(s)
+#     for_each = {
+#         for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
+#             name    = dvo.resource_record_name
+#             record  = dvo.resource_record_value
+#             type    = dvo.resource_record_type
+#             # zone_id = aws_route53_zone.hosted_zones[0].zone_id
+#         }
+#     }
+
+#     allow_overwrite = true
+#     name            = each.value.name
+#     records         = [each.value.record]
+#     ttl             = 60
+#     type            = each.value.type
+#     # zone_id         = each.value.zone_id
+#     zone_id         = aws_route53_zone.hosted_zones[0].zone_id
+# }
+# ****
+# resource "aws_route53_record" "record_validations" {
+#     count = length(var.domains)
+#     name = aws_acm_certificate.certificate.domain_validation_options[count.index]["resource_record_name"]
+#     type = aws_acm_certificate.certificate.domain_validation_options[count.index]["resource_record_type"]
+#     zone_id = aws_route53_zone.hosted_zones[0].zone_id
+#     records = [aws_acm_certificate.certificate.domain_validation_options[count.index]["resource_record_value"]]
+#     ttl = 60
+# }
+# ****
+resource "aws_route53_record" "record_validations" {
+    for_each = { #TODO Capture DVOs in a local, but set to empty if there are no domains
         for dvo in aws_acm_certificate.certificate.domain_validation_options : dvo.domain_name => {
             name    = dvo.resource_record_name
             record  = dvo.resource_record_value
             type    = dvo.resource_record_type
-            zone_id = aws_route53_zone.hosted_zones[0].zone_id
+            # zone_id = dvo.domain_name == "example.org" ? data.aws_route53_zone.example_org.zone_id : data.aws_route53_zone.example_com.zone_id
+            zone_id = local.zone_ids_by_domain[dvo.domain_name]
         }
     }
 
@@ -302,11 +336,13 @@ resource "aws_route53_record" "record_validation" {
     zone_id         = each.value.zone_id
 }
 
+
+
 # This basically is a watcher to see when the certificate is finished being created and validated. It enables the CloudFront CDN resource to wait to be created until it has the certificate it'll use.
 resource "aws_acm_certificate_validation" "certificate_validation" {
     # count = length(var.domains) > 0 ? 1 : 0 # TODO Do this only for environments with domains 
     certificate_arn = aws_acm_certificate.certificate.arn
-    validation_record_fqdns = [for record in aws_route53_record.record_validation : record.fqdn]
+    validation_record_fqdns = [for record in aws_route53_record.record_validations : record.fqdn]
   
 }
 
