@@ -10,6 +10,7 @@ import {
   getMatchingCare,
   getResultBounds,
   getFiltersFromSearchParams,
+  MILE_DISTANCE_OPTIONS,
 } from "../util";
 import CARE_PROVIDER_DATA from "../data/ladders_data.json";
 import {
@@ -202,6 +203,10 @@ function Search() {
     setSearchResult(result);
   };
 
+  const isCurrentlyAtWidestRadius =
+    searchFilters.miles ===
+    MILE_DISTANCE_OPTIONS[MILE_DISTANCE_OPTIONS.length - 1];
+
   useEffect(() => {
     // zip is the only required filter - redirect to homepage if it doesn't exist
     if (!initialFilters.zip) {
@@ -249,9 +254,11 @@ function Search() {
                   </>
                 ) : (
                   <p>
-                    {t("pages.search.noResults", {
-                      miles: searchFilters.miles,
-                    })}
+                    {isCurrentlyAtWidestRadius
+                      ? t("pages.search.noResultsGeneric")
+                      : t("pages.search.noResultsExpandRadius", {
+                          miles: searchFilters.miles,
+                        })}
                   </p>
                 )}
               </>

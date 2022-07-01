@@ -10,7 +10,7 @@ const betaLabel = (
   </span>
 );
 function Footer() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <USWDSFooter
       primary={<></>}
@@ -29,7 +29,9 @@ function Footer() {
             </Grid>
             <Grid row>
               {t(`${T_PREFIX}feedbackPrompt`)}
-              <Link to="GOOGLE FORM LINK">{t(`${T_PREFIX}feedbackCta`)}</Link>
+              <Link to={t("common.feedbackUrl")}>
+                {t(`${T_PREFIX}feedbackCta`)}
+              </Link>
             </Grid>
           </Grid>
           <Grid col="auto" tablet={{ col: 6 }}>
