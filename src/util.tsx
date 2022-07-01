@@ -20,7 +20,7 @@ export const DEFAULT_RADIUS_MILES = 10;
 
 export const METERS_IN_A_MILE = 1609.34;
 
-export const MILE_DISTANCE_OPTIONS = ["10", "25", "50", "100"];
+export const MILE_DISTANCE_OPTIONS = ["5", "10", "50", "100"];
 
 export const getZipCenter = (zip: string): LatLngLiteral | null => {
   const data = (coloradoZipData as ZipData)[zip];

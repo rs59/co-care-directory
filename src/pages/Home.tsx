@@ -1,6 +1,6 @@
 import React from "react";
-import { CardGroup, Grid, GridContainer } from "@trussworks/react-uswds";
-import { Link } from "react-router-dom";
+import { CardGroup, Grid, GridContainer, Link } from "@trussworks/react-uswds";
+import { Link as RouterLink } from "react-router-dom";
 import styled from "styled-components";
 
 import { useTranslation } from "react-i18next";
@@ -66,6 +66,12 @@ function Home() {
   const { t } = useTranslation();
   const T_PREFIX = "pages.home.";
 
+  const betaLabel = (
+    <span className="text-normal text-base-darker font-body-lg bg-accent-warm-lighter radius-pill padding-x-1">
+      BETA
+    </span>
+  );
+
   return (
     <GridContainer>
       <Hero src={heroPath} />
@@ -73,7 +79,7 @@ function Home() {
         <Grid row>
           <Grid col={12}>
             <Heading className="radius-lg padding-2">
-              {t(`${T_PREFIX}heading`)}
+              {t(`${T_PREFIX}heading`)} {betaLabel}
             </Heading>
             <CardGroup className="bg-white radius-lg padding-x-1 tablet:padding-top-3 justify-content-around">
               <ZipCard />
@@ -97,14 +103,16 @@ function Home() {
                       {t(`${T_PREFIX}_coloradoCrisisService.heading`)}
                     </h2>
                     <p>{t(`${T_PREFIX}_coloradoCrisisService.content`)}</p>
-                    <Link
-                      to="https://coloradocrisisservices.org"
-                      target="_blank"
-                      type="external"
-                    >
-                      {t(`${T_PREFIX}_coloradoCrisisService.cta`)}
-                    </Link>
                   </>
+                }
+                cta={
+                  <Link
+                    href="https://coloradocrisisservices.org"
+                    target="_blank"
+                    variant="external"
+                  >
+                    {t(`${T_PREFIX}_coloradoCrisisService.cta`)}
+                  </Link>
                 }
               />
               <ContentCard
@@ -115,14 +123,16 @@ function Home() {
                       {t(`${T_PREFIX}_iMatter.heading`)}
                     </h2>
                     <p>{t(`${T_PREFIX}_iMatter.content`)}</p>
-                    <Link
-                      to="https://imattercolorado.org"
-                      target="_blank"
-                      type="external"
-                    >
-                      {t(`${T_PREFIX}_iMatter.cta`)}
-                    </Link>
                   </>
+                }
+                cta={
+                  <Link
+                    href="https://imattercolorado.org"
+                    target="_blank"
+                    variant="external"
+                  >
+                    {t(`${T_PREFIX}_iMatter.cta`)}
+                  </Link>
                 }
               />
               <ContentCard
@@ -133,10 +143,12 @@ function Home() {
                       {t(`${T_PREFIX}_bha.heading`)}
                     </h2>
                     <p>{t(`${T_PREFIX}_bha.content`)}</p>
-                    <Link to="/privacy-policy">
-                      {t(`${T_PREFIX}_bha.cta`)}
-                    </Link>{" "}
                   </>
+                }
+                cta={
+                  <RouterLink to="/privacy-policy">
+                    {t(`${T_PREFIX}_bha.cta`)}
+                  </RouterLink>
                 }
               />
             </CardGroup>

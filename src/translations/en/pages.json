@@ -21,7 +21,8 @@
   "search": {
     "heading": "Results near",
     "resultCount_one": "{{count}} result",
-    "resultCount_other": "{{count}} results"
+    "resultCount_other": "{{count}} results",
+    "noResults": "There are no results within {{miles}} miles. Try adjusting your filters to expand your search."
   },
   "resultDetail": {
     "backToSearch": "Back to search",

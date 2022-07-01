@@ -6,15 +6,14 @@ import { SearchFilters } from "../../types";
 type ZipInputProps = {
   filters: SearchFilters;
   setFilters: Dispatch<SetStateAction<SearchFilters>>;
-  tPrefix: string;
 };
 
-function ZipInput({ filters, setFilters, tPrefix }: ZipInputProps) {
+function ZipInput({ filters, setFilters }: ZipInputProps) {
   const { t } = useTranslation();
   return (
     <div className="width-full">
       <Label htmlFor="zip" className="margin-bottom-1">
-        {t(`${tPrefix}zipInput`)}
+        {t(`common.zipCode`)}
       </Label>
       <TextInput
         className="margin-top-0"

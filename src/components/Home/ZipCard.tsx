@@ -48,11 +48,7 @@ function ZipCard() {
           }}
         >
           <div className="display-flex flex-align-end">
-            <ZipInput
-              filters={filters}
-              setFilters={setFilters}
-              tPrefix={`${T_PREFIX}.zip.`}
-            />
+            <ZipInput filters={filters} setFilters={setFilters} />
             <ZipButton type="submit" className="usa-button margin-left-1">
               {t(`${T_PREFIX}searchButton`)}{" "}
             </ZipButton>

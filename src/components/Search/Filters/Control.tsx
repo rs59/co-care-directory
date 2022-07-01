@@ -106,7 +106,7 @@ function SearchFiltersControl({
           <FeesPreferenceInput
             filters={filters}
             setFilters={setFilters}
-            tPrefix={`${T_PREFIX}filters.feesPreference.`}
+            tPrefix={`${T_PREFIX}filters.feePreference.`}
           />
         </div>
         <Button

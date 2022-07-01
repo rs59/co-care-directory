@@ -133,11 +133,7 @@ function GuidedSearch() {
             />
           ) : currentStep === "location" ? (
             <FilterFieldset legend={t(`${T_PREFIX}location.question`)}>
-              <ZipInput
-                filters={searchFilters}
-                setFilters={setSearchFilters}
-                tPrefix={`components.home.`}
-              />
+              <ZipInput filters={searchFilters} setFilters={setSearchFilters} />
             </FilterFieldset>
           ) : currentStep === "distance" ? (
             <DistanceInput

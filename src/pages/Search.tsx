@@ -21,10 +21,8 @@ import {
 import Control from "../components/Search/Filters/Control";
 import ResultCard from "../components/Search/ResultCard";
 import ResultsList from "../components/Search/ResultsList";
-import ResultsMap, { ResultsMapProps } from "../components/Search/ResultsMap";
-import MobileViewToggle, {
-  MobileViewToggleProps,
-} from "../components/Search/MobileViewToggle";
+import ResultsMap from "../components/Search/ResultsMap";
+import MobileViewToggle from "../components/Search/MobileViewToggle";
 import { markerIcon, markerActiveIcon } from "../components/Map";
 import { ReactComponent as Close } from "../images/close.svg";
 
@@ -244,8 +242,18 @@ function Search() {
                     count: searchResult.results.length,
                   })}
                 </h2>
-                <Desktop results={searchResult.results} />
-                <Mobile results={searchResult.results} />
+                {searchResult.results.length ? (
+                  <>
+                    <Desktop results={searchResult.results} />
+                    <Mobile results={searchResult.results} />
+                  </>
+                ) : (
+                  <p>
+                    {t("pages.search.noResults", {
+                      miles: searchFilters.miles,
+                    })}
+                  </p>
+                )}
               </>
             )}
           </div>

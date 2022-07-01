@@ -1,11 +1,17 @@
-import { Card, CardBody, CardHeader } from "@trussworks/react-uswds";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+} from "@trussworks/react-uswds";
 import { ReactNode } from "react";
 
 type ContentCardProps = {
   headerContent: ReactNode;
   bodyContent: ReactNode;
+  cta: ReactNode;
 };
-function ContentCard({ headerContent, bodyContent }: ContentCardProps) {
+function ContentCard({ headerContent, bodyContent, cta }: ContentCardProps) {
   return (
     <Card
       containerProps={{ className: "bg-base-lightest border-0" }}
@@ -15,6 +21,7 @@ function ContentCard({ headerContent, bodyContent }: ContentCardProps) {
         {headerContent}
       </CardHeader>
       <CardBody>{bodyContent}</CardBody>
+      <CardFooter>{cta}</CardFooter>
     </Card>
   );
 }
