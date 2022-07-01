@@ -97,7 +97,7 @@ Your local environment should have Docker installed. If you haven't built the Do
 docker build -t coloradodigitalservice/co-care-directory-deploy .
 ```
 
-If you want to attach domains the deployment, then they should live inside the target AWS account's Route53 Registered Domains.
+If you want to attach domains during the deployment (i.e. specified as an environment variable), then those domains should live inside the target AWS account's Route53 Registered Domains. Otherwise, you can run without domains specified and manually setup your domains to point to a CloudFront generated URL.
 
 
 ### First time
