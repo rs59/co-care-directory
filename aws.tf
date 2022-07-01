@@ -335,5 +335,5 @@ resource "aws_acm_certificate_validation" "certificate_validation" {
 
 output "urls" {
     description = "URL(s) that the app can be accessed at"
-    value = length(var.domains) > 0 ? jsonencode(var.domains) : aws_cloudfront_distribution.cdn.domain_name
+    value = length(var.domains) > 0 ? formatlist("https://%s", var.domains) : [aws_cloudfront_distribution.cdn.domain_name]
 }
